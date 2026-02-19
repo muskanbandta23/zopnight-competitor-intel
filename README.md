@@ -71,3 +71,8 @@ Reddit	reddit.com/search.rss via rss2json	Live RSS
 Blogs	9 RSS feeds + Google News fallback	Live RSS
 News	Google News RSS + direct search links	Live RSS
 Total: 0 dependencies, 0 frameworks, 0 backend, 1 file.
+
+
+
+file:///Users/zopdev/Desktop/My/index.html
+https://muskanbandta23.github.io/zopnight-competitor-intel/
