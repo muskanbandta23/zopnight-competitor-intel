@@ -109,71 +109,117 @@ async function fetchBlogs() {
   return posts;
 }
 
-// ── Fetch Reddit (via Google News site:reddit.com — Reddit RSS returns 403) ──
+// ── Fetch Reddit (JSON API — latest posts from cloud subreddits + keyword searches) ──
 async function fetchReddit() {
-  console.log('👽 Fetching Reddit via Google...');
+  console.log('👽 Fetching Reddit via JSON API...');
   const posts = [];
   const seen = new Set();
 
-  // Use Google News RSS with site:reddit.com to find Reddit discussions
-  const batches = [
-    { q: 'site:reddit.com CloudZero OR Kubecost OR "Cast AI" OR nOps OR "Spot.io"', label: 'High Threat' },
-    { q: 'site:reddit.com Densify OR Flexera OR Harness OR Turbonomic OR ScaleOps OR Finout OR Datadog', label: 'Medium Threat' },
-    { q: 'site:reddit.com DuploCloud OR ParkMyCloud OR Astuto OR Neysa OR CloudPilot OR Ternary OR Cloudability OR Holori OR Anodot', label: 'Other Competitors' },
-    { q: 'site:reddit.com CloudHealth OR "GCP cost" OR "cloud cost optimization" OR FinOps', label: 'Industry' },
-    { q: 'site:reddit.com "kubernetes cost" OR "cloud waste" OR "right sizing" OR "spot instances"', label: 'Cloud Optimization' },
-    { q: 'site:reddit.com "cloud cost management" OR "cloud savings" OR "finops platform" OR "cloud budget"', label: 'FinOps Tools' },
-  ];
-
-  for (const b of batches) {
-    const items = await safeFetch(`https://news.google.com/rss/search?q=${encodeURIComponent(b.q)}&hl=en-US&gl=US&ceid=US:en`);
-    for (const item of items) {
-      const title = item.title || '';
-      if (seen.has(title)) continue;
-      seen.add(title);
-      const content = stripHtml(item.contentSnippet || item.content || '');
-      const tl = (title + ' ' + content).toLowerCase();
-      const matched = COMPETITORS.find(c => tl.includes(c.name.toLowerCase()));
-      const subMatch = (item.link || '').match(/\/r\/([^/]+)/);
-      posts.push({
-        id: `rd-${posts.length}`, title,
-        preview: content || `Reddit discussion about ${matched?.name || b.label}`,
-        url: item.link || '', source: matched?.name || b.label,
-        timestamp: toTs(item.pubDate || item.isoDate),
-        subreddit: subMatch ? subMatch[1] : '',
+  let redditBlocked = false;
+  async function rdJSON(url) {
+    if (redditBlocked) return [];
+    try {
+      const resp = await fetch(url, {
+        signal: AbortSignal.timeout(10000),
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; ZopNight/1.0)', 'Accept': 'application/json' },
       });
-    }
-    await delay(400);
+      if (resp.status === 429) { console.warn(`  Reddit 429 — switching to Google fallback`); redditBlocked = true; return []; }
+      if (!resp.ok) { console.warn(`  Reddit ${resp.status}: ${url.substring(0,80)}`); return []; }
+      const d = await resp.json();
+      return (d.data?.children || []).map(ch => ch.data).filter(p => p && p.title);
+    } catch (err) { console.warn(`  Reddit fail: ${err.message}`); return []; }
   }
 
-  // Also try Reddit JSON API for key subreddits
-  for (const sub of ['finops', 'devops', 'kubernetes']) {
-    try {
-      const resp = await fetch(`https://www.reddit.com/r/${sub}/new.json?limit=15&t=week`, {
-        signal: AbortSignal.timeout(8000),
-        headers: { 'User-Agent': 'ZopNight-Bot/1.0', 'Accept': 'application/json' },
-      });
-      if (resp.ok) {
-        const d = await resp.json();
-        for (const ch of (d.data?.children || [])) {
-          const p = ch.data;
-          if (!p || !p.title || seen.has(p.title)) continue;
-          seen.add(p.title);
-          const tl = p.title.toLowerCase();
-          const matched = COMPETITORS.find(c => tl.includes(c.name.toLowerCase()));
-          posts.push({
-            id: `rd-j-${posts.length}`, title: p.title,
-            preview: (p.selftext || '').substring(0, 300) || `r/${sub} discussion`,
-            url: `https://www.reddit.com${p.permalink}`, source: matched?.name || `r/${sub}`,
-            timestamp: p.created_utc || Math.floor(Date.now() / 1000),
-            subreddit: sub, score: p.score, comments: p.num_comments,
-          });
-        }
+  // Only keep posts from relevant subreddits (prevents junk from random subs)
+  const VALID_SUBS = new Set(['finops','aws','azure','googlecloud','kubernetes','devops','cloudcomputing','docker','terraform','dataengineering','sysadmin','sre','netsec','homelab','selfhosted','programming','softwareengineering','microservices','databricks','serverless','linux','golang','python','java','node','webdev','startups','saas','techleadership','cto','itstrategy','msp']);
+
+  function addPost(p, label) {
+    if (!p.title || seen.has(p.title)) return;
+    const sub = (p.subreddit || '').toLowerCase();
+    // For search results, only keep posts from relevant subs (subreddit feed results are already filtered)
+    if (!VALID_SUBS.has(sub) && label !== `r/${sub}`) return;
+    seen.add(p.title);
+    const tl = (p.title + ' ' + (p.selftext || '')).toLowerCase();
+    const matched = COMPETITORS.find(c => tl.includes(c.name.toLowerCase()));
+    posts.push({
+      id: `rd-${posts.length}`, title: p.title,
+      preview: (p.selftext || '').substring(0, 400) || `r/${p.subreddit} discussion`,
+      url: `https://www.reddit.com${p.permalink}`,
+      source: matched?.name || label,
+      timestamp: p.created_utc || Math.floor(Date.now() / 1000),
+      subreddit: p.subreddit || '', score: p.score || 0, comments: p.num_comments || 0,
+    });
+  }
+
+  // 1. Latest posts from cloud/FinOps subreddits
+  const subs = ['finops','aws','googlecloud','azure','kubernetes','devops','cloudcomputing','docker','terraform','dataengineering','sysadmin'];
+  for (let i = 0; i < subs.length; i += 3) {
+    const chunk = subs.slice(i, i + 3);
+    const results = await Promise.all(chunk.map(sub =>
+      rdJSON(`https://www.reddit.com/r/${sub}/new.json?limit=25&t=week`)
+    ));
+    results.forEach((items, idx) => items.forEach(p => addPost(p, `r/${chunk[idx]}`)));
+    await delay(1000);
+  }
+
+  // 2. Search for all 23 competitor names (fewer batches, longer delays)
+  const compSearches = [
+    'CloudZero OR Kubecost OR "Cast AI" OR nOps OR "Spot.io"',
+    'Densify OR Flexera OR Harness OR Turbonomic OR ScaleOps OR Finout',
+    'Datadog OR CloudHealth OR Cloudability OR DuploCloud OR ParkMyCloud',
+    'Astuto OR Neysa OR CloudPilot OR Ternary OR Anodot OR Holori',
+  ];
+  for (const q of compSearches) {
+    const items = await rdJSON(`https://www.reddit.com/search.json?q=${encodeURIComponent(q)}&sort=new&t=month&limit=25`);
+    items.forEach(p => addPost(p, 'Competitor'));
+    await delay(1200);
+  }
+
+  // 3. Search cloud keywords — fewer, bigger queries with longer delays
+  const cloudSearches = [
+    { q: '"cloud cost" OR "cloud savings" OR "cloud waste" OR "cloud budget" OR FinOps', label: 'Cloud Cost' },
+    { q: '"AWS cost" OR "AWS billing" OR "AWS savings" OR "reserved instances" OR "savings plans"', label: 'AWS Cost' },
+    { q: '"Azure cost" OR "GCP cost" OR "Google Cloud pricing" OR "multi-cloud"', label: 'Azure/GCP' },
+    { q: '"kubernetes cost" OR "k8s cost" OR "container cost" OR "EKS" OR "GKE" OR "AKS"', label: 'K8s Cost' },
+    { q: '"rightsizing" OR "right-sizing" OR "spot instance" OR "EC2 savings" OR "overprovisioned"', label: 'Rightsizing' },
+    { q: '"Databricks cost" OR "Databricks pricing" OR "Databricks optimization" OR "data pipeline cost"', label: 'Databricks' },
+  ];
+  for (const s of cloudSearches) {
+    const items = await rdJSON(`https://www.reddit.com/search.json?q=${encodeURIComponent(s.q)}&sort=new&t=week&limit=25`);
+    items.forEach(p => addPost(p, s.label));
+    await delay(1200);
+  }
+
+  // Fallback: if Reddit JSON API was rate-limited, use Google News site:reddit.com
+  if (redditBlocked && posts.length < 50) {
+    console.log('  Using Google News fallback for Reddit...');
+    const gnBatches = [
+      'site:reddit.com CloudZero OR Kubecost OR "Cast AI" OR nOps OR Spot.io OR FinOps',
+      'site:reddit.com Densify OR Flexera OR Harness OR Turbonomic OR ScaleOps OR Datadog',
+      'site:reddit.com "cloud cost" OR "AWS cost" OR "kubernetes cost" OR "rightsizing"',
+      'site:reddit.com "Azure cost" OR "GCP cost" OR "spot instance" OR "reserved instances"',
+      'site:reddit.com "cloud optimization" OR "cloud waste" OR "cloud savings" OR Databricks',
+    ];
+    for (const q of gnBatches) {
+      const items = await safeFetch(`https://news.google.com/rss/search?q=${encodeURIComponent(q)}&hl=en-US&gl=US&ceid=US:en`);
+      for (const item of items) {
+        const title = item.title || '';
+        if (seen.has(title)) continue;
+        seen.add(title);
+        const content = stripHtml(item.contentSnippet || item.content || '');
+        const tl = (title + ' ' + content).toLowerCase();
+        const matched = COMPETITORS.find(c => tl.includes(c.name.toLowerCase()));
+        const subMatch = (item.link || '').match(/\/r\/([^/]+)/);
+        posts.push({
+          id: `rd-gn-${posts.length}`, title,
+          preview: content || 'Reddit discussion',
+          url: item.link || '', source: matched?.name || 'Cloud',
+          timestamp: toTs(item.pubDate || item.isoDate),
+          subreddit: subMatch ? subMatch[1] : '',
+        });
       }
-    } catch (err) {
-      console.warn(`  Reddit JSON /r/${sub} failed: ${err.message}`);
+      await delay(400);
     }
-    await delay(500);
   }
 
   posts.sort((a, b) => b.timestamp - a.timestamp);
