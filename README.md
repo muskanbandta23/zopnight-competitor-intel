@@ -1,78 +1,157 @@
-Will it update every day?
-Partially. Here's how it works:
+# ZopNight Competitor Intelligence Dashboard
 
-Every time someone opens the link, it fetches fresh data from RSS feeds (Reddit, blogs, news, LinkedIn) automatically
-The code has a 24-hour auto-refresh (setInterval) but that only works while the tab stays open
-The verified direct post links (Twitter/LinkedIn) are hardcoded — those won't update unless you push new code
-There's no backend server running — it's a static HTML file, so there's no cron job fetching data overnight
-To make it truly auto-update daily, you'd need a backend or CI/CD pipeline — but for now, every page load = fresh RSS data.
+**Live:** [https://muskanbandta23.github.io/zopnight-competitor-intel/](https://muskanbandta23.github.io/zopnight-competitor-intel/)
 
-How It's Built — Single HTML File, No Backend
-Architecture
-index.html (914 lines)
-├── <style>  — All CSS embedded
-├── <body>   — All HTML structure
-└── <script> — All JavaScript logic
+Real-time competitor intelligence dashboard for **ZopNight** (FinOps product by ZopDev). Tracks 23 cloud cost optimization competitors across LinkedIn, X/Twitter, Reddit, Blogs, and News — **auto-updated twice daily** via GitHub Actions.
 
-Key Techniques
-1. Data Layer — Hardcoded competitor array
+---
 
-23 competitors stored in a JS array C[] with properties: name, threat level, website, LinkedIn, Twitter handle, blog URL, strengths, weaknesses, etc.
-No database needed — all competitor intel is in the code
-2. RSS Feeds via CORS Proxy (rss2json.com)
+## What It Does
 
-Browsers block cross-origin RSS requests, so we use api.rss2json.com as a free proxy
-It converts RSS XML → JSON that JavaScript can read
-Used for: Reddit posts, blog feeds, Google News, LinkedIn discovery
-fetchRSS(url) → rss2json.com/v1/api.json?rss_url={url} → JSON items
+| Tab | What It Shows | Data Count |
+|-----|---------------|------------|
+| **Overview** | All 23 competitors — threat level, feature comparison, strengths/gaps, direct links | 23 cards |
+| **Comparison** | Feature-by-feature table (ZopNight vs top 7 competitors) | 14 features |
+| **Strengths** | Where ZopNight wins (One-Click ON/OFF, Group Toggles, ZopAI, IDP) | 6 advantages |
+| **Gaps** | Where competitors challenge us (K8s allocation, RI/SP, spot automation) | 6 gap areas |
+| **Alerts** | Combined feed of latest activity from all platforms | Top 50 |
+| **LinkedIn** | Verified direct post links + Google News discovery | ~1,600 posts |
+| **X/Twitter** | 18 verified direct tweet URLs + profile pages + Google mention search | 18+ tweets |
+| **Reddit** | Posts via Google News `site:reddit.com` + Reddit JSON API | ~200 posts |
+| **Blogs** | Competitor RSS feeds (Cast AI, nOps, Flexera, Harness, Anodot, Finout) | ~140 articles |
+| **News** | ALL 23 competitors — funding, product launches, partnerships, marketing | ~600 articles |
+| **Blog Ideas** | 20 strategic blog topics for ZopNight based on competitor gaps | 20 ideas |
 
-3. Reddit — Global search with OR queries
+---
 
-Instead of 51 separate API calls (17 terms × 3 subreddits), combines terms:
-reddit.com/search.rss?q=CloudZero OR Kubecost OR "Cast AI"
-Only 7 total API calls instead of 51
-Sequential with 600ms delays to avoid rate limits
-4. Twitter/X — Verified hardcoded post links
+## Competitors Tracked (23)
 
-X has no free API and blocks RSS
-Solution: Searched Google for actual tweet URLs, hardcoded 18 verified direct links
-Also provides: profile page links, Google-based mention searches
-5. LinkedIn — Hardcoded posts + Google News RSS
+| Threat | Competitors |
+|--------|-------------|
+| **High** | CloudZero, Kubecost, Cast AI, nOps, Spot.io |
+| **Medium** | Densify, CloudHealth, Flexera, Harness, Turbonomic, ParkMyCloud, ScaleOps, Finout, Cloudability, Datadog |
+| **Low** | DuploCloud, Astuto, Neysa, CloudPilot AI, Ternary, GCP Cost Mgmt, Anodot, Holori |
 
-LinkedIn blocks scraping entirely
-Solution: 15 verified direct post URLs hardcoded + Google News RSS for site:linkedin.com "CompanyName" to discover more
-6. Blogs — Direct RSS feeds
+---
 
-9 competitor blogs have working RSS feeds (Cast AI, nOps, Kubecost, Flexera, etc.)
-Fetched in batches of 3 with 500ms delays
-7. News — Google News RSS
+## How It Works
 
-news.google.com/rss/search?q={term} returns news articles as RSS
-Searched for each high-threat competitor + industry keywords
-8. Rate Limit Protection
+```
+┌─────────────────────────────────────────────────────────┐
+│                  GitHub Actions (Cron)                   │
+│            Runs at 6:00 AM + 6:00 PM UTC daily          │
+│                                                         │
+│  1. Checkout repo                                       │
+│  2. npm ci (install rss-parser)                         │
+│  3. node fetch-data.js                                  │
+│     ├── Fetches blogs via RSS (rss-parser, no proxy)    │
+│     ├── Fetches Reddit via Google News + JSON API       │
+│     ├── Fetches news for ALL 23 competitors             │
+│     └── Fetches LinkedIn via Google News                │
+│  4. Saves data.json (~1.5 MB)                           │
+│  5. git commit + push (if data changed)                 │
+│  6. GitHub Pages auto-rebuilds                          │
+└─────────────────────────────────────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────────┐
+│                GitHub Pages (Hosting)                    │
+│        Serves index.html + data.json to browser         │
+│                                                         │
+│  User opens dashboard URL                               │
+│    → Loads data.json instantly (no API calls)            │
+│    → Shows all competitor data in < 1 second             │
+│    → Falls back to live RSS if data.json is stale       │
+└─────────────────────────────────────────────────────────┘
+```
 
-All feeds load sequentially (Twitter → Reddit → Blogs → News → LinkedIn)
-Each feed has internal staggered batching with delays
-rss2json free tier can't handle 80+ parallel calls, so this prevents 0-result failures
-9. UI — Pure CSS, no frameworks
+### Why This Architecture?
 
-CSS variables for dark theme (--bg, --accent, --card, etc.)
-CSS Grid for responsive layouts
-Sticky header, tabbed navigation, filter chips, search boxes
-All minified class names (.hdr, .pc, .tc, etc.)
-What Each Tab Does
-Tab	Data Source	Method
-Overview	Hardcoded C[] array	Static render
-Comparison	Hardcoded feature matrix	Static table
-Strengths/Gaps	Hardcoded analysis	Static cards
-LinkedIn	15 verified URLs + rss2json	Hardcoded + RSS
-X/Twitter	18 verified URLs + Google search links	Hardcoded
-Reddit	reddit.com/search.rss via rss2json	Live RSS
-Blogs	9 RSS feeds + Google News fallback	Live RSS
-News	Google News RSS + direct search links	Live RSS
-Total: 0 dependencies, 0 frameworks, 0 backend, 1 file.
+- **No backend server** — GitHub Actions is the "server" (runs for free)
+- **No API keys** — uses public RSS feeds and Google News
+- **No rate limiting** — data is pre-fetched server-side, not in the browser
+- **Instant load** — dashboard loads pre-cached `data.json`, no waiting
+- **Free hosting** — GitHub Pages serves the static site
+- **Auto-updates** — cron runs twice daily without manual intervention
 
+---
 
+## Project Structure
 
-file:///Users/zopdev/Desktop/My/index.html
-https://muskanbandta23.github.io/zopnight-competitor-intel/
+```
+.
+├── index.html                        # Main dashboard (single HTML file)
+├── data.json                         # Pre-fetched data (auto-updated by CI)
+├── README.md
+├── .gitignore
+├── scripts/
+│   ├── fetch-data.js                 # Node.js data fetcher
+│   ├── package.json                  # Dependencies (rss-parser)
+│   └── package-lock.json
+└── .github/
+    └── workflows/
+        └── update-data.yml           # Cron workflow (twice daily)
+```
+
+---
+
+## Data Sources
+
+| Source | How We Fetch | Why This Method |
+|--------|-------------|-----------------|
+| **Blogs** | `rss-parser` npm package (direct RSS) | No CORS issues server-side, no rate limits |
+| **Reddit** | Google News RSS `site:reddit.com` + Reddit JSON API `/r/{sub}/new.json` | Reddit blocks RSS feeds (403), Google finds the posts instead |
+| **News** | Google News RSS for all 23 competitors with specific queries | Covers funding, product, partnerships, marketing for every competitor |
+| **LinkedIn** | Google News RSS `site:linkedin.com` + 15 hardcoded verified post URLs | LinkedIn blocks all scraping, Google News indexes LinkedIn posts |
+| **Twitter** | 18 hardcoded verified tweet URLs + profile links | X/Twitter has no free API, Nitter is dead |
+
+---
+
+## News Auto-Tagging
+
+Each news article is automatically categorized:
+
+| Tag | Detects | Example |
+|-----|---------|---------|
+| **Funding** | fundraising, valuations, Series rounds, investments | "Neysa raises $1.2B from Blackstone" |
+| **Product** | launches, new features, updates, releases | "Datadog adds Cloud Cost Management" |
+| **Partnership** | integrations, acquisitions, mergers | "Ternary + Wipro Partnership" |
+| **Marketing** | events, conferences, campaigns | "DASH 2026 Conference" |
+| **Leadership** | executive hires, appointments | "Cast AI appoints new CFO" |
+
+---
+
+## Blog Ideas Categories
+
+The Blog Ideas tab provides 20 strategic blog topics in 5 categories:
+
+| Category | Purpose | Example |
+|----------|---------|---------|
+| **Counter** | Position ZopNight against specific competitors | "Why One-Click Scheduling Beats Manual Right-Sizing" |
+| **SEO** | Target high-search-volume keywords | "Cloud Cost Optimization in 2026: Complete Guide" |
+| **Thought Leadership** | Unique ZopNight angles no competitor can claim | "The IDP Is the Future of FinOps" |
+| **Trending** | Ride competitor news waves | "Cast AI Raises $1B+ — What It Means for the Market" |
+| **Guide** | Product tutorials that drive sign-ups | "Automated Environment Scheduling in 10 Minutes" |
+
+---
+
+## Manual Data Refresh
+
+To update data outside the twice-daily schedule:
+
+1. Go to **[Actions](https://github.com/muskanbandta23/zopnight-competitor-intel/actions)**
+2. Click **"Update Competitor Intel Data"**
+3. Click **"Run workflow"**
+4. Data refreshes in ~30 seconds
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Vanilla HTML + CSS + JS (no frameworks, no build step) |
+| Backend | Node.js + `rss-parser` (runs in GitHub Actions) |
+| Hosting | GitHub Pages (free, auto-deploys on push) |
+| CI/CD | GitHub Actions cron (free for public repos) |
+| Data | RSS feeds, Google News RSS, Reddit JSON API |
