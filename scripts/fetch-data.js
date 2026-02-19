@@ -318,4 +318,4 @@ async function main() {
   console.log(`   LI:${data._meta.counts.linkedin} TW:${data._meta.counts.twitter} RD:${data._meta.counts.reddit} BL:${data._meta.counts.blogs} NW:${data._meta.counts.news}`);
 }
 
-main().catch(err => { console.error('Fatal:', err); process.exit(1); });
+main().then(() => process.exit(0)).catch(err => { console.error('Fatal:', err); process.exit(1); });
