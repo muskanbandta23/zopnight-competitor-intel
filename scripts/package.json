@@ -1,0 +1,12 @@
+{
+  "name": "zopnight-data-fetcher",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fetch": "node fetch-data.js"
+  },
+  "dependencies": {
+    "rss-parser": "^3.13.0"
+  }
+}
