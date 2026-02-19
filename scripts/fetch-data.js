@@ -109,55 +109,71 @@ async function fetchBlogs() {
   return posts;
 }
 
-// ── Fetch Reddit ──
+// ── Fetch Reddit (via Google News site:reddit.com — Reddit RSS returns 403) ──
 async function fetchReddit() {
-  console.log('👽 Fetching Reddit...');
+  console.log('👽 Fetching Reddit via Google...');
   const posts = [];
   const seen = new Set();
 
-  const searches = [
-    { q: 'CloudZero OR Kubecost OR "Cast AI" OR nOps OR Spot.io', label: 'Competitors (High)' },
-    { q: 'Densify OR Datadog OR Flexera OR Harness OR Turbonomic OR ScaleOps OR Finout', label: 'Competitors (Medium)' },
-    { q: 'FinOps OR "cloud cost optimization" OR "kubernetes cost" OR "cloud waste"', label: 'FinOps Industry' },
-    { q: '"cloud cost management" OR "right sizing" OR "spot instances" OR "reserved instances cloud"', label: 'Cloud Optimization' },
+  // Use Google News RSS with site:reddit.com to find Reddit discussions
+  const batches = [
+    { q: 'site:reddit.com CloudZero OR Kubecost OR "Cast AI" OR nOps OR "Spot.io"', label: 'High Threat' },
+    { q: 'site:reddit.com Densify OR Flexera OR Harness OR Turbonomic OR ScaleOps OR Finout OR Datadog', label: 'Medium Threat' },
+    { q: 'site:reddit.com DuploCloud OR ParkMyCloud OR Astuto OR Neysa OR CloudPilot OR Ternary OR Cloudability OR Holori OR Anodot', label: 'Other Competitors' },
+    { q: 'site:reddit.com CloudHealth OR "GCP cost" OR "cloud cost optimization" OR FinOps', label: 'Industry' },
+    { q: 'site:reddit.com "kubernetes cost" OR "cloud waste" OR "right sizing" OR "spot instances"', label: 'Cloud Optimization' },
+    { q: 'site:reddit.com "cloud cost management" OR "cloud savings" OR "finops platform" OR "cloud budget"', label: 'FinOps Tools' },
   ];
 
-  for (const s of searches) {
-    const items = await safeFetch(`https://www.reddit.com/search.rss?q=${encodeURIComponent(s.q)}&sort=new&t=month`);
+  for (const b of batches) {
+    const items = await safeFetch(`https://news.google.com/rss/search?q=${encodeURIComponent(b.q)}&hl=en-US&gl=US&ceid=US:en`);
     for (const item of items) {
       const title = item.title || '';
       if (seen.has(title)) continue;
       seen.add(title);
-      const lowerTitle = title.toLowerCase();
-      const matched = COMPETITORS.find(c => lowerTitle.includes(c.name.toLowerCase()));
-      const subMatch = (item.link || '').match(/\/r\/([^/]+)\//);
+      const content = stripHtml(item.contentSnippet || item.content || '');
+      const tl = (title + ' ' + content).toLowerCase();
+      const matched = COMPETITORS.find(c => tl.includes(c.name.toLowerCase()));
+      const subMatch = (item.link || '').match(/\/r\/([^/]+)/);
       posts.push({
         id: `rd-${posts.length}`, title,
-        preview: stripHtml(item.contentSnippet || item.content || '') || `Discussion about ${matched?.name || s.label}`,
-        url: item.link || '', source: matched?.name || s.label,
+        preview: content || `Reddit discussion about ${matched?.name || b.label}`,
+        url: item.link || '', source: matched?.name || b.label,
         timestamp: toTs(item.pubDate || item.isoDate),
         subreddit: subMatch ? subMatch[1] : '',
       });
     }
-    await delay(800);
+    await delay(400);
   }
 
+  // Also try Reddit JSON API for key subreddits
   for (const sub of ['finops', 'devops', 'kubernetes']) {
-    const items = await safeFetch(`https://www.reddit.com/r/${sub}/new.rss`);
-    for (const item of items) {
-      const title = item.title || '';
-      if (seen.has(title)) continue;
-      seen.add(title);
-      const subMatch = (item.link || '').match(/\/r\/([^/]+)\//);
-      posts.push({
-        id: `rd-${posts.length}`, title,
-        preview: stripHtml(item.contentSnippet || item.content || ''),
-        url: item.link || '', source: `r/${sub}`,
-        timestamp: toTs(item.pubDate || item.isoDate),
-        subreddit: subMatch ? subMatch[1] : sub,
+    try {
+      const resp = await fetch(`https://www.reddit.com/r/${sub}/new.json?limit=15&t=week`, {
+        signal: AbortSignal.timeout(8000),
+        headers: { 'User-Agent': 'ZopNight-Bot/1.0', 'Accept': 'application/json' },
       });
+      if (resp.ok) {
+        const d = await resp.json();
+        for (const ch of (d.data?.children || [])) {
+          const p = ch.data;
+          if (!p || !p.title || seen.has(p.title)) continue;
+          seen.add(p.title);
+          const tl = p.title.toLowerCase();
+          const matched = COMPETITORS.find(c => tl.includes(c.name.toLowerCase()));
+          posts.push({
+            id: `rd-j-${posts.length}`, title: p.title,
+            preview: (p.selftext || '').substring(0, 300) || `r/${sub} discussion`,
+            url: `https://www.reddit.com${p.permalink}`, source: matched?.name || `r/${sub}`,
+            timestamp: p.created_utc || Math.floor(Date.now() / 1000),
+            subreddit: sub, score: p.score, comments: p.num_comments,
+          });
+        }
+      }
+    } catch (err) {
+      console.warn(`  Reddit JSON /r/${sub} failed: ${err.message}`);
     }
-    await delay(800);
+    await delay(500);
   }
 
   posts.sort((a, b) => b.timestamp - a.timestamp);
@@ -165,31 +181,59 @@ async function fetchReddit() {
   return posts;
 }
 
-// ── Fetch News ──
+// ── Fetch News (ALL 23 competitors — funding, marketing, product, partnerships) ──
 async function fetchNews() {
-  console.log('📰 Fetching news...');
+  console.log('📰 Fetching competitor news (all 23)...');
   const posts = [];
   const seen = new Set();
 
-  const terms = [
-    ...COMPETITORS.filter(c => c.threat === 'high').map(c => c.name),
-    'FinOps', 'cloud cost optimization', 'kubernetes cost management', 'cloud cost reduction'
+  function tagNewsType(text) {
+    const tl = text.toLowerCase();
+    if (/fund|rais|valua|invest|\$\d|series [a-e]|ipo/i.test(tl)) return 'Funding';
+    if (/launch|releas|announc|new feature|product|update|ga |general avail/i.test(tl)) return 'Product';
+    if (/partner|integrat|acqui|merg|join/i.test(tl)) return 'Partnership';
+    if (/market|campaign|brand|event|conference|summit/i.test(tl)) return 'Marketing';
+    if (/hire|appoint|ceo|cto|cfo|leader|executive/i.test(tl)) return 'Leadership';
+    return 'General';
+  }
+
+  const newsBatches = [
+    { q: '"CloudZero" funding OR partnership OR launch OR pricing OR product', label: 'CloudZero' },
+    { q: '"Kubecost" OR "Apptio Kubecost" funding OR acquisition OR launch OR product', label: 'Kubecost' },
+    { q: '"Cast AI" funding OR valuation OR launch OR partnership', label: 'Cast AI' },
+    { q: '"nOps" cloud cost OR "nOps.io" funding OR launch', label: 'nOps' },
+    { q: '"Spot.io" OR "Spot by NetApp" cloud optimization OR product', label: 'Spot.io' },
+    { q: '"Densify" OR "Flexera" cloud cost OR funding OR product OR partnership', label: 'Densify/Flexera' },
+    { q: '"Harness" cloud cost OR CCM OR "Harness.io" funding OR launch', label: 'Harness' },
+    { q: '"Turbonomic" OR "IBM Turbonomic" optimization OR product OR update', label: 'Turbonomic' },
+    { q: '"ScaleOps" kubernetes OR funding OR launch', label: 'ScaleOps' },
+    { q: '"Finout" cloud cost OR MegaBill OR funding OR launch', label: 'Finout' },
+    { q: '"Datadog" cloud cost management OR CCM OR pricing OR feature', label: 'Datadog' },
+    { q: '"CloudHealth" VMware OR "cloud management" OR product', label: 'CloudHealth' },
+    { q: '"ParkMyCloud" OR "Cloudability" OR "Apptio" FinOps OR cloud cost', label: 'ParkMyCloud/Cloudability' },
+    { q: '"DuploCloud" OR "Astuto" OR "Neysa" cloud OR funding OR AI', label: 'DuploCloud/Astuto/Neysa' },
+    { q: '"CloudPilot AI" OR "Ternary" OR "Anodot" OR "Holori" cloud cost OR funding', label: 'CloudPilot/Ternary/Others' },
+    { q: '"GCP cost management" OR "Google Cloud cost" tools OR update OR feature', label: 'GCP Cost Mgmt' },
   ];
 
-  for (const term of terms) {
-    const items = await safeFetch(`https://news.google.com/rss/search?q=${encodeURIComponent(term)}&hl=en-US&gl=US&ceid=US:en`);
+  for (const b of newsBatches) {
+    const items = await safeFetch(`https://news.google.com/rss/search?q=${encodeURIComponent(b.q)}&hl=en-US&gl=US&ceid=US:en`);
     for (const item of items) {
       const title = item.title || '';
       if (seen.has(title)) continue;
       seen.add(title);
+      const content = stripHtml(item.contentSnippet || item.content || '');
+      const tl = (title + ' ' + content).toLowerCase();
+      const matched = COMPETITORS.find(c => tl.includes(c.name.toLowerCase()));
+      const src = matched?.name || b.label.split('/')[0];
       posts.push({
         id: `nw-${posts.length}`, title,
-        preview: stripHtml(item.contentSnippet || item.content || ''),
-        url: item.link || '', source: term,
+        preview: content, url: item.link || '', source: src,
         timestamp: toTs(item.pubDate || item.isoDate),
+        newsType: tagNewsType(title + ' ' + content),
       });
     }
-    await delay(500);
+    await delay(400);
   }
 
   posts.sort((a, b) => b.timestamp - a.timestamp);
