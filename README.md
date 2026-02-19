@@ -2,7 +2,7 @@
 
 **Live:** [https://muskanbandta23.github.io/zopnight-competitor-intel/](https://muskanbandta23.github.io/zopnight-competitor-intel/)
 
-Real-time competitor intelligence dashboard for **ZopNight** (FinOps product by ZopDev). Tracks 23 cloud cost optimization competitors across LinkedIn, X/Twitter, Reddit, Blogs, and News — **auto-updated twice daily** via GitHub Actions.
+Real-time competitor intelligence dashboard for **ZopNight** (FinOps product for Zopnight). Tracks 23 cloud cost optimization competitors across LinkedIn, X/Twitter, Reddit, Blogs, and News — **auto-updated twice daily** via GitHub Actions.
 
 ---
 
@@ -121,19 +121,6 @@ Each news article is automatically categorized:
 
 ---
 
-## Blog Ideas Categories
-
-The Blog Ideas tab provides 20 strategic blog topics in 5 categories:
-
-| Category | Purpose | Example |
-|----------|---------|---------|
-| **Counter** | Position ZopNight against specific competitors | "Why One-Click Scheduling Beats Manual Right-Sizing" |
-| **SEO** | Target high-search-volume keywords | "Cloud Cost Optimization in 2026: Complete Guide" |
-| **Thought Leadership** | Unique ZopNight angles no competitor can claim | "The IDP Is the Future of FinOps" |
-| **Trending** | Ride competitor news waves | "Cast AI Raises $1B+ — What It Means for the Market" |
-| **Guide** | Product tutorials that drive sign-ups | "Automated Environment Scheduling in 10 Minutes" |
-
----
 
 ## Manual Data Refresh
 
@@ -155,3 +142,6 @@ To update data outside the twice-daily schedule:
 | Hosting | GitHub Pages (free, auto-deploys on push) |
 | CI/CD | GitHub Actions cron (free for public repos) |
 | Data | RSS feeds, Google News RSS, Reddit JSON API |
+
+
+Made by Muskan Bandta
