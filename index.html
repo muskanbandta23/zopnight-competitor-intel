@@ -161,6 +161,20 @@
         .nlist{flex:1;overflow-y:auto}
         .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150}.ov.open{display:block}
 
+        .bcard{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:22px;transition:.2s;position:relative}
+        .bcard:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(108,92,231,.15)}
+        .bcard .btag{position:absolute;top:12px;right:12px;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
+        .bcard .btag.counter{background:rgba(255,107,107,.15);color:var(--red)}
+        .bcard .btag.seo{background:rgba(0,206,201,.15);color:var(--green)}
+        .bcard .btag.thought{background:rgba(108,92,231,.15);color:var(--accent2)}
+        .bcard .btag.compare{background:rgba(253,203,110,.15);color:var(--orange)}
+        .bcard .btag.guide{background:rgba(10,102,194,.15);color:var(--li)}
+        .bcard h4{font-size:15px;font-weight:700;color:var(--txt);margin-bottom:8px;padding-right:70px;line-height:1.4}
+        .bcard .bwhy{font-size:12px;color:var(--accent2);margin-bottom:8px;font-weight:600}
+        .bcard p{font-size:12px;color:var(--txt2);line-height:1.6}
+        .bcard .btarget{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+        .bcard .btarget span{padding:3px 8px;border-radius:5px;font-size:10px;font-weight:500;background:rgba(108,92,231,.12);color:var(--accent2);border:1px solid rgba(108,92,231,.2)}
+
         .legend{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap}
         .legend-i{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt3)}
         .legend-d{width:10px;height:10px;border-radius:3px}
@@ -196,6 +210,8 @@
     <button class="nav-t" data-tab="reddit"><span class="ic">&#x1F47D;</span> Reddit <span class="cnt" id="rd-cnt">0</span></button>
     <button class="nav-t" data-tab="blogs"><span class="ic">&#x1F4DD;</span> Blogs <span class="cnt" id="bl-cnt">0</span></button>
     <button class="nav-t" data-tab="news"><span class="ic">&#x1F4F0;</span> News <span class="cnt" id="nw-cnt">0</span></button>
+    <div class="nav-sep"></div>
+    <button class="nav-t" data-tab="blogideas"><span class="ic">&#x1F4A1;</span> Blog Ideas</button>
 </nav>
 <main class="main">
 
@@ -294,7 +310,7 @@
 </div>
 
 <div class="tc" id="tab-reddit">
-    <div class="stitle"><span>&#x1F47D;</span> Reddit <span class="sub">&mdash; Real posts. Click to open on Reddit.</span></div>
+    <div class="stitle"><span>&#x1F47D;</span> Reddit &mdash; Latest Posts (Last 2 Days) <span class="sub">&mdash; Real discussions. Click to open on Reddit.</span></div>
     <div class="ctrls">
         <div class="sbox"><input type="text" id="redditSearch" placeholder="Search Reddit..." oninput="filterFd('reddit')"></div>
         <button class="rbtn" id="rdRBtn" onclick="loadReddit()"><span id="rdSpn">&#x21BB;</span> Refresh</button>
@@ -318,7 +334,7 @@
 </div>
 
 <div class="tc" id="tab-news">
-    <div class="stitle"><span>&#x1F4F0;</span> News <span class="sub">&mdash; Google News articles.</span></div>
+    <div class="stitle"><span>&#x1F4F0;</span> Competitor News &mdash; Funding, Marketing &amp; Product <span class="sub">&mdash; All 23 competitors. Verified news only.</span></div>
     <div class="ctrls">
         <div class="sbox"><input type="text" id="newsSearch" placeholder="Search news..." oninput="filterFd('news')"></div>
         <button class="rbtn" id="nwRBtn" onclick="loadNews()"><span id="nwSpn">&#x21BB;</span> Refresh</button>
@@ -327,6 +343,11 @@
     <div class="apnl"><div class="ahdr"><h3>Latest News</h3><span class="acnt" id="nwTotal">0</span></div>
         <div class="pfeed" id="newsFeed"><div class="lds"><div class="ldsp"></div>Fetching news...</div></div>
     </div>
+</div>
+
+<div class="tc" id="tab-blogideas">
+    <div class="stitle"><span>&#x1F4A1;</span> Blog Ideas for ZopNight <span class="sub">&mdash; Strategic blog topics based on competitor gaps &amp; market trends</span></div>
+    <div class="agrid" id="blogIdeasGrid"></div>
 </div>
 
 </main>
@@ -402,6 +423,7 @@ function postCard(p,type){
             ${p.preview?`<div class="pc-pv">${esc(p.preview)}</div>`:''}
             <div class="pc-m">
                 <span class="bdg ${bcls[type]}">${lbl[type]}</span>
+                ${p.newsType?`<span class="bdg nb">${p.newsType}</span>`:''}
                 ${p.subreddit?`<span>r/${esc(p.subreddit)}</span>`:''}
                 ${p.score?`<span>&#x2B06; ${p.score}</span>`:''}
                 ${p.comments?`<span>&#x1F4AC; ${p.comments}</span>`:''}
@@ -601,87 +623,76 @@ async function loadTwitter(){
 }
 
 // ============ REDDIT ============
-// FIX: Use Reddit GLOBAL search with OR queries to reduce API calls drastically
-// Instead of 51 calls (17 terms × 3 subs), we make ~8 calls total
+// Reddit RSS returns 403 — use Google News RSS with site:reddit.com to find actual Reddit posts
 async function loadReddit(){
     const fd=document.getElementById('redditFeed');
     const btn=document.getElementById('rdRBtn');const spn=document.getElementById('rdSpn');
     btn.classList.add('ld');spn.classList.add('spn');
-    fd.innerHTML='<div class="lds"><div class="ldsp"></div>Searching Reddit...</div>';
+    fd.innerHTML='<div class="lds"><div class="ldsp"></div>Searching Reddit via Google...</div>';
     FD.reddit=[];
     const seen=new Set();
 
-    function addItems(items,label){
-        items.forEach(item=>{
-            const title=item.title||'';
-            if(seen.has(title))return;
-            seen.add(title);
-            const ts=item.pubDate?new Date(item.pubDate).getTime()/1000:Date.now()/1000;
-            const content=(item.content||item.description||'').replace(/<[^>]*>/g,'').substring(0,300);
-            const subMatch=(item.link||'').match(/\/r\/([^/]+)\//);
-            const postSub=subMatch?subMatch[1]:'';
-            FD.reddit.push({id:`rd-${FD.reddit.length}`,title,preview:content||`Discussion about ${label}`,url:item.link||`https://www.reddit.com/search?q=${encodeURIComponent(label)}`,source:label,timestamp:ts,subreddit:postSub});
-        });
-    }
-
-    // Combined OR queries on Reddit GLOBAL search (.rss) — much fewer API calls
-    // Group 1: High-threat competitor names
-    const q1='CloudZero OR Kubecost OR "Cast AI" OR nOps OR Spot.io';
-    // Group 2: Medium competitors
-    const q2='Densify OR Datadog OR Flexera OR Harness OR Turbonomic OR ScaleOps OR Finout';
-    // Group 3: Industry keywords
-    const q3='FinOps OR "cloud cost optimization" OR "kubernetes cost" OR "cloud waste"';
-    // Group 4: More industry
-    const q4='"cloud cost management" OR "right sizing" OR "spot instances" OR "reserved instances cloud"';
-
-    const searches=[
-        {q:q1,label:'Competitors (High)'},
-        {q:q2,label:'Competitors (Medium)'},
-        {q:q3,label:'FinOps Industry'},
-        {q:q4,label:'Cloud Optimization'},
+    // Search ALL 23 competitors on Reddit via Google News RSS (site:reddit.com)
+    // Group into batches to reduce API calls
+    const batches=[
+        {q:'site:reddit.com CloudZero OR Kubecost OR "Cast AI" OR nOps OR "Spot.io"',label:'High Threat'},
+        {q:'site:reddit.com Densify OR Flexera OR Harness OR Turbonomic OR ScaleOps OR Finout OR Datadog',label:'Medium Threat'},
+        {q:'site:reddit.com DuploCloud OR ParkMyCloud OR Astuto OR Neysa OR CloudPilot OR Ternary OR Cloudability OR Holori OR Anodot',label:'Other Competitors'},
+        {q:'site:reddit.com CloudHealth OR "GCP cost" OR "cloud cost optimization" OR FinOps',label:'Industry'},
+        {q:'site:reddit.com "kubernetes cost" OR "cloud waste" OR "right sizing" OR "spot instances" OR "reserved instances"',label:'Cloud Optimization'},
+        {q:'site:reddit.com "cloud cost management" OR "cloud savings" OR "finops platform" OR "cloud budget"',label:'FinOps Tools'},
     ];
 
-    // Run global searches ONE AT A TIME with delay to avoid rate limits
-    for(const s of searches){
+    for(const b of batches){
         try{
-            const url=`https://www.reddit.com/search.rss?q=${encodeURIComponent(s.q)}&sort=new&t=month`;
+            const url=`https://news.google.com/rss/search?q=${encodeURIComponent(b.q)}&hl=en-US&gl=US&ceid=US:en`;
             const items=await fetchRSS(url);
-            // Tag each item with the best matching competitor name
             items.forEach(item=>{
-                const t=(item.title||'').toLowerCase();
-                const matched=C.find(c=>t.includes(c.n.toLowerCase()));
-                const lbl=matched?matched.n:s.label;
                 const title=item.title||'';
                 if(seen.has(title))return;
                 seen.add(title);
                 const ts=item.pubDate?new Date(item.pubDate).getTime()/1000:Date.now()/1000;
-                const content=(item.content||item.description||'').replace(/<[^>]*>/g,'').substring(0,300);
-                const subMatch=(item.link||'').match(/\/r\/([^/]+)\//);
-                const postSub=subMatch?subMatch[1]:'';
-                FD.reddit.push({id:`rd-${FD.reddit.length}`,title,preview:content||`Discussion about ${lbl}`,url:item.link,source:lbl,timestamp:ts,subreddit:postSub});
+                const content=(item.description||item.content||'').replace(/<[^>]*>/g,'').substring(0,300);
+                // Match to competitor
+                const tl=title.toLowerCase()+' '+content.toLowerCase();
+                const matched=C.find(c=>tl.includes(c.n.toLowerCase()));
+                const lbl=matched?matched.n:b.label;
+                // Extract subreddit from URL if possible
+                const subMatch=(item.link||'').match(/\/r\/([^/]+)/);
+                FD.reddit.push({id:`rd-${FD.reddit.length}`,title,preview:content||`Reddit discussion about ${lbl}`,url:item.link,source:lbl,timestamp:ts,subreddit:subMatch?subMatch[1]:''});
             });
         }catch(e){}
-        // Small delay between calls to avoid rate limiting
-        await new Promise(r=>setTimeout(r,600));
+        renderFd('reddit');renderChips('reddit');
+        await new Promise(r=>setTimeout(r,400));
     }
 
-    // Also get latest posts from key subreddits (top posts, no search)
+    // Also try direct Reddit JSON API for key subreddits (sometimes works)
     const topSubs=['finops','devops','kubernetes'];
     for(const sub of topSubs){
         try{
-            const items=await fetchRSS(`https://www.reddit.com/r/${sub}/new.rss`);
-            addItems(items,`r/${sub}`);
+            const r=await fetch(`https://www.reddit.com/r/${sub}/new.json?limit=15&t=week`,{signal:AbortSignal.timeout(8000),headers:{'Accept':'application/json'}});
+            if(r.ok){
+                const d=await r.json();
+                (d.data?.children||[]).forEach(ch=>{
+                    const p=ch.data;if(!p||!p.title)return;
+                    if(seen.has(p.title))return;
+                    seen.add(p.title);
+                    const tl=p.title.toLowerCase();
+                    const matched=C.find(c=>tl.includes(c.n.toLowerCase()));
+                    FD.reddit.push({id:`rd-j-${FD.reddit.length}`,title:p.title,preview:(p.selftext||'').substring(0,300)||`r/${sub} discussion`,url:`https://www.reddit.com${p.permalink}`,source:matched?matched.n:`r/${sub}`,timestamp:p.created_utc||Date.now()/1000,subreddit:sub,score:p.score,comments:p.num_comments});
+                });
+            }
         }catch(e){}
         await new Promise(r=>setTimeout(r,500));
     }
 
-    // Direct Reddit search links for EACH competitor — these always work
+    // Direct Reddit search links for EACH competitor
     C.forEach(c=>{
         FD.reddit.push({
             id:`rd-lnk-${c.id}`,
             title:`${c.n} — Search Reddit`,
-            preview:`Click to search Reddit for all posts and discussions about ${c.n}. Opens reddit.com/search directly.`,
-            url:`https://www.reddit.com/search/?q=${encodeURIComponent(c.n)}&sort=new&t=month`,
+            preview:`Click to search Reddit for all posts about ${c.n}. Opens reddit.com/search directly.`,
+            url:`https://www.reddit.com/search/?q=${encodeURIComponent(c.n)}&sort=new&t=week`,
             source:c.n,timestamp:Date.now()/1000-86400*20,timeLabel:'Search Reddit'
         });
     });
@@ -763,51 +774,122 @@ async function loadBlogs(){
 }
 
 // ============ NEWS ============
-// Staggered fetching + direct Google News links
+// Fetch news for ALL 23 competitors — funding, marketing, product launches, partnerships
 async function loadNews(){
     const fd=document.getElementById('newsFeed');
     const btn=document.getElementById('nwRBtn');const spn=document.getElementById('nwSpn');
     btn.classList.add('ld');spn.classList.add('spn');
-    fd.innerHTML='<div class="lds"><div class="ldsp"></div>Fetching news...</div>';
+    fd.innerHTML='<div class="lds"><div class="ldsp"></div>Fetching competitor news (all 23)...</div>';
     FD.news=[];
+    const seen=new Set();
 
-    // Only search high-priority competitors + key industry terms (reduce from 18+ to ~10 calls)
-    const terms=C.filter(c=>c.th==='high').map(c=>c.n)
-        .concat(['FinOps','cloud cost optimization','kubernetes cost management','cloud cost reduction']);
+    // Search ALL 23 competitors in batched OR queries (reduces API calls)
+    const newsBatches=[
+        // High threat - individual searches for best results
+        {q:'"CloudZero" funding OR partnership OR launch OR pricing OR product',label:'CloudZero'},
+        {q:'"Kubecost" OR "Apptio Kubecost" funding OR acquisition OR launch OR product',label:'Kubecost'},
+        {q:'"Cast AI" funding OR valuation OR launch OR partnership',label:'Cast AI'},
+        {q:'"nOps" cloud cost OR "nOps.io" funding OR launch',label:'nOps'},
+        {q:'"Spot.io" OR "Spot by NetApp" cloud optimization OR product',label:'Spot.io'},
+        // Medium threat - grouped searches
+        {q:'"Densify" OR "Flexera" cloud cost OR funding OR product OR partnership',label:'Densify/Flexera'},
+        {q:'"Harness" cloud cost OR CCM OR "Harness.io" funding OR launch',label:'Harness'},
+        {q:'"Turbonomic" OR "IBM Turbonomic" optimization OR product OR update',label:'Turbonomic'},
+        {q:'"ScaleOps" kubernetes OR funding OR launch OR "$"',label:'ScaleOps'},
+        {q:'"Finout" cloud cost OR MegaBill OR funding OR launch',label:'Finout'},
+        {q:'"Datadog" cloud cost management OR CCM OR pricing OR feature',label:'Datadog'},
+        {q:'"CloudHealth" VMware OR "cloud management" OR product',label:'CloudHealth'},
+        {q:'"ParkMyCloud" OR "Cloudability" OR "Apptio" FinOps OR cloud cost',label:'ParkMyCloud/Cloudability'},
+        // Low threat - grouped
+        {q:'"DuploCloud" OR "Astuto" OR "Neysa" cloud OR funding OR AI',label:'DuploCloud/Astuto/Neysa'},
+        {q:'"CloudPilot AI" OR "Ternary" OR "Anodot" OR "Holori" cloud cost OR funding',label:'CloudPilot/Ternary/Others'},
+        {q:'"GCP cost management" OR "Google Cloud cost" tools OR update OR feature',label:'GCP Cost Mgmt'},
+    ];
 
-    // Fetch ONE AT A TIME with delay to avoid rss2json rate limits
-    for(const term of terms){
+    for(const b of newsBatches){
         try{
-            const gnUrl=`https://news.google.com/rss/search?q=${encodeURIComponent(term)}&hl=en-US&gl=US&ceid=US:en`;
-            const items=await fetchRSS(gnUrl);
+            const url=`https://news.google.com/rss/search?q=${encodeURIComponent(b.q)}&hl=en-US&gl=US&ceid=US:en`;
+            const items=await fetchRSS(url);
             items.forEach(item=>{
+                const title=item.title||'';
+                if(seen.has(title))return;
+                seen.add(title);
                 const ts=item.pubDate?new Date(item.pubDate).getTime()/1000:Date.now()/1000;
-                if(!FD.news.find(x=>x.title===item.title)){
-                    FD.news.push({id:`nw-${FD.news.length}`,title:item.title,preview:(item.description||'').replace(/<[^>]*>/g,'').substring(0,250),url:item.link,source:term,timestamp:ts});
-                }
+                const content=(item.description||'').replace(/<[^>]*>/g,'').substring(0,300);
+                // Match to specific competitor
+                const tl=(title+' '+content).toLowerCase();
+                const matched=C.find(c=>tl.includes(c.n.toLowerCase()));
+                const src=matched?matched.n:b.label.split('/')[0];
+                // Tag news type
+                let newsType='General';
+                if(/fund|rais|valua|invest|\$\d|series [a-e]|ipo/i.test(tl))newsType='Funding';
+                else if(/launch|releas|announc|new feature|product|update|ga |general avail/i.test(tl))newsType='Product';
+                else if(/partner|integrat|acqui|merg|join/i.test(tl))newsType='Partnership';
+                else if(/market|campaign|brand|event|conference|summit/i.test(tl))newsType='Marketing';
+                else if(/hire|appoint|ceo|cto|cfo|leader|executive/i.test(tl))newsType='Leadership';
+                FD.news.push({id:`nw-${FD.news.length}`,title,preview:content,url:item.link,source:src,timestamp:ts,newsType});
             });
         }catch(e){}
-        // Progressive rendering
         renderFd('news');renderChips('news');
-        await new Promise(r=>setTimeout(r,500));
+        await new Promise(r=>setTimeout(r,400));
     }
 
     // Direct Google News search links for ALL competitors
     C.forEach(c=>{
-        FD.news.push({id:`nw-gn-${c.id}`,title:`${c.n} — Google News Search`,preview:`Click to search Google News for latest articles about ${c.n}. Opens Google News directly.`,url:`https://www.google.com/search?q=${encodeURIComponent(c.n+' cloud cost')}&tbm=nws&tbs=qdr:m`,source:c.n,timestamp:Date.now()/1000-86400*10,timeLabel:'Google News'});
-    });
-
-    // Industry-wide news links
-    ['FinOps','cloud cost optimization','kubernetes cost management','cloud waste reduction'].forEach((q,i)=>{
-        FD.news.push({id:`nw-ind-${i}`,title:`Google News: "${q}"`,preview:`Latest news articles about ${q}. Opens Google News search directly.`,url:`https://www.google.com/search?q=${encodeURIComponent(q)}&tbm=nws&tbs=qdr:w`,source:'Industry',timestamp:Date.now()/1000-86400*15-i,timeLabel:'Google News'});
+        FD.news.push({id:`nw-gn-${c.id}`,title:`${c.n} — Google News Search`,preview:`Search Google News for latest articles about ${c.n}. Funding, product launches, partnerships.`,url:`https://www.google.com/search?q=${encodeURIComponent('"'+c.n+'" cloud OR funding OR launch OR partnership')}&tbm=nws&tbs=qdr:m`,source:c.n,timestamp:Date.now()/1000-86400*10,timeLabel:'Google News'});
     });
 
     FD.news.sort((a,b)=>b.timestamp-a.timestamp);
-    const real=FD.news.filter(p=>!p.id.startsWith('nw-gn-')&&!p.id.startsWith('nw-ind-'));
-    document.getElementById('nw-cnt').textContent=real.length||FD.news.length;
+    const real=FD.news.filter(p=>!p.id.startsWith('nw-gn-'));
+    document.getElementById('nw-cnt').textContent=real.length;
     btn.classList.remove('ld');spn.classList.remove('spn');
     renderFd('news');renderChips('news');
-    return FD.news.length;
+    return real.length;
+}
+
+// ============ BLOG IDEAS FOR ZOPNIGHT ============
+function renderBlogIdeas(){
+    const ideas=[
+        // Counter-positioning blogs (against competitor strengths)
+        {cat:'counter',tag:'Counter',title:'Why One-Click Environment Scheduling Beats Manual Right-Sizing for Non-Prod Savings',why:'Cast AI & Densify push auto right-sizing, but 60% of waste comes from idle non-prod. ZopNight solves this instantly.',desc:'Show how enterprises waste more on always-on dev/staging than on oversized prod. Position ZopNight ON/OFF as the fastest ROI vs weeks of right-sizing tuning.',targets:['Cast AI','Densify','ScaleOps']},
+        {cat:'counter',tag:'Counter',title:'FinOps Without the Complexity: Why Your Team Doesn\'t Need 50 Dashboard Widgets',why:'CloudZero, Cloudability, and Flexera have complex UIs. ZopNight is simple and action-oriented.',desc:'Blog about dashboard fatigue in FinOps tools. Argue that actionable controls (toggle ON/OFF) matter more than 50 cost charts nobody reads.',targets:['CloudZero','Cloudability','Flexera']},
+        {cat:'counter',tag:'Counter',title:'Spot Instance Automation vs Environment Scheduling: Which Saves More?',why:'Spot.io and nOps focus on spot instances. Compare real savings: scheduling idle resources vs spot replacement.',desc:'Data-driven comparison showing environment scheduling delivers 40-60% savings with zero risk, while spot instances save 30-50% with interruption risk.',targets:['Spot.io','nOps','Cast AI']},
+        {cat:'counter',tag:'Counter',title:'Why Your CI/CD Tool Shouldn\'t Be Your FinOps Tool (Harness CCM vs Dedicated FinOps)',why:'Harness bundles cost mgmt with CI/CD. Argue for separation of concerns.',desc:'Harness AutoStopping is limited to their CI/CD ecosystem. ZopNight works across all clouds and infra without vendor lock-in.',targets:['Harness']},
+
+        // SEO-targeted blogs (high-search keywords)
+        {cat:'seo',tag:'SEO',title:'Cloud Cost Optimization in 2026: The Complete Guide to Reducing Your AWS/Azure/GCP Bill',why:'Targets "cloud cost optimization" — highest search volume keyword in FinOps space.',desc:'Comprehensive guide covering all strategies: scheduling, right-sizing, reserved instances, spot. Position ZopNight ON/OFF as the easiest first step.',targets:['SEO: cloud cost optimization']},
+        {cat:'seo',tag:'SEO',title:'How to Stop Paying for Idle Dev/Staging Environments (And Save 60% Instantly)',why:'Targets "idle cloud resources" and "dev environment cost" — high intent keywords.',desc:'Step-by-step guide showing the real cost of always-on non-prod environments. Include calculator showing potential savings with ZopNight.',targets:['SEO: idle cloud resources']},
+        {cat:'seo',tag:'SEO',title:'Kubernetes Cost Management: Beyond Monitoring to Automated Action',why:'Targets "kubernetes cost management" — Kubecost and Cast AI dominate this keyword.',desc:'Show that K8s cost monitoring alone doesn\'t save money. You need automated actions. ZopNight group toggles for K8s namespaces.',targets:['Kubecost','Cast AI','SEO: kubernetes cost']},
+        {cat:'seo',tag:'SEO',title:'FinOps Tools Comparison 2026: CloudZero vs Kubecost vs Cast AI vs ZopNight',why:'Comparison pages rank well in Google. Capture "vs" search traffic.',desc:'Honest feature comparison highlighting where each tool excels. ZopNight wins on simplicity, one-click actions, and IDP integration.',targets:['CloudZero','Kubecost','Cast AI']},
+
+        // Thought leadership
+        {cat:'thought',tag:'Thought Leadership',title:'The Internal Developer Platform (IDP) Is the Future of FinOps — Here\'s Why',why:'Only ZopNight has ZopDay IDP + ZopNight FinOps. No competitor combines both.',desc:'Argue that cost optimization must be embedded in the developer workflow, not a separate dashboard. ZopDay+ZopNight = velocity + efficiency.',targets:['Unique to ZopNight']},
+        {cat:'thought',tag:'Thought Leadership',title:'Why FinOps Teams Should Focus on Environment Lifecycle, Not Just Rightsizing',why:'Industry obsesses over right-sizing. ZopNight\'s approach of lifecycle management is under-discussed.',desc:'New framing: the biggest savings come from managing WHEN resources run, not just HOW BIG they are. Scheduling > sizing for most enterprises.',targets:['Industry thought piece']},
+        {cat:'thought',tag:'Thought Leadership',title:'Multi-Cloud Cost Management: Why Most Tools Only Work on AWS',why:'Many competitors (nOps, CloudZero) are AWS-first. ZopNight is truly multi-cloud.',desc:'Expose the "multi-cloud" marketing lie. Most FinOps tools have 80% of features on AWS only. ZopNight delivers equal experience across AWS, Azure, GCP.',targets:['nOps','CloudZero','Spot.io']},
+
+        // Competitor-triggered content (based on their recent activity)
+        {cat:'compare',tag:'Trending',title:'Cast AI Raises $1B+ Valuation — What This Means for Cloud Cost Optimization Market',why:'Cast AI just hit unicorn status. Ride the news wave with ZopNight perspective.',desc:'Analyze Cast AI\'s growth, what it means for the market, and where ZopNight differentiates (non-K8s, simpler UX, IDP, group toggles).',targets:['Cast AI']},
+        {cat:'compare',tag:'Trending',title:'Datadog Adds Cloud Cost Management — Is Observability the New FinOps?',why:'Datadog expanding into cost mgmt threatens dedicated FinOps tools. Address this head-on.',desc:'Analyze Datadog\'s CCM offering. Argue that bundled cost features lack depth. ZopNight provides dedicated, actionable FinOps with one-click controls.',targets:['Datadog']},
+        {cat:'compare',tag:'Trending',title:'Kubecost Acquired by Apptio (IBM): What Changes for Open-Source K8s Cost Users?',why:'Kubecost acquisition by IBM/Apptio changes the landscape. Address enterprise concerns.',desc:'Discuss what IBM ownership means for Kubecost users. Enterprise pricing increases? Lock-in? Position ZopNight as independent alternative.',targets:['Kubecost','Cloudability']},
+        {cat:'compare',tag:'Trending',title:'ScaleOps Raises $58M — The K8s Optimization Arms Race Is Heating Up',why:'ScaleOps recent funding shows investor interest. Market analysis opportunity.',desc:'Cover the K8s optimization funding boom (Cast AI, ScaleOps). Argue the market is shifting from monitoring to action — exactly what ZopNight delivers.',targets:['ScaleOps','Cast AI']},
+
+        // How-to guides
+        {cat:'guide',tag:'Guide',title:'How to Set Up Automated Environment Scheduling in 10 Minutes with ZopNight',why:'Product tutorial that drives sign-ups. Shows ZopNight\'s simplicity advantage.',desc:'Step-by-step guide: connect cloud account, select non-prod environments, set schedule, save 60%. Emphasize the "10 minute" speed vs competitors\' complex setup.',targets:['Product tutorial']},
+        {cat:'guide',tag:'Guide',title:'Building a FinOps Practice from Scratch: A Startup\'s Guide to Cloud Cost Control',why:'Target early-stage startups before they adopt competitor tools.',desc:'For teams with <$50K/month cloud spend. Start with visibility, then scheduling (ZopNight), then right-sizing. Don\'t over-tool early.',targets:['Startups','Early-stage']},
+        {cat:'guide',tag:'Guide',title:'Group Environment Toggles: Managing Dev, Staging, and QA Costs as a Team',why:'Unique ZopNight feature. No competitor has group-level toggles.',desc:'Show real workflows: QA team toggles all QA environments OFF at 6 PM, ON at 9 AM. Dev lead manages staging. Platform team has override controls via RBAC.',targets:['Unique to ZopNight']},
+        {cat:'guide',tag:'Guide',title:'ZopAI Recommendations: How AI Identifies Your Biggest Cloud Waste Automatically',why:'Showcase ZopAI — the AI-powered recommendation engine.',desc:'Walk through how ZopAI analyzes usage patterns, identifies idle resources, and recommends scheduling. Real customer examples with before/after costs.',targets:['Product tutorial','ZopAI']},
+    ];
+
+    const grid=document.getElementById('blogIdeasGrid');
+    grid.innerHTML=ideas.map((idea,i)=>`
+        <div class="bcard">
+            <span class="btag ${idea.cat}">${idea.tag}</span>
+            <h4>${idea.title}</h4>
+            <div class="bwhy">${idea.why}</div>
+            <p>${idea.desc}</p>
+            <div class="btarget">${idea.targets.map(t=>`<span>${t}</span>`).join('')}</div>
+        </div>
+    `).join('');
 }
 
 // ============ OVERVIEW ============
@@ -844,7 +926,7 @@ function renderStats(){
     const liC=FD.linkedin.filter(p=>!p.id.startsWith('li-pg-')).length;
     const twC=FD.twitter.length;
     const rdC=FD.reddit.filter(p=>!p.id.startsWith('rd-lnk-')).length;
-    const nwC=FD.news.filter(p=>!p.id.startsWith('nw-gn-')&&!p.id.startsWith('nw-ind-')).length||FD.news.length;
+    const nwC=FD.news.filter(p=>!p.id.startsWith('nw-gn-')).length;
     document.getElementById('statsBar').innerHTML=`
         <div class="stat"><div class="stat-l">Competitors</div><div class="stat-v">23</div><div class="stat-c">Tracking actively</div></div>
         <div class="stat"><div class="stat-l">High Threat</div><div class="stat-v" style="color:var(--red)">5</div><div class="stat-c">CloudZero, Kubecost, Cast AI, nOps, Spot.io</div></div>
@@ -862,7 +944,7 @@ function renderAlerts(){
         ...FD.twitter.filter(p=>p.id.startsWith('tw-vf-')||p.id.startsWith('tw-of-')).slice(0,10).map(p=>({...p,_t:'twitter'})),
         ...FD.reddit.filter(p=>!p.id.startsWith('rd-lnk-')).slice(0,10).map(p=>({...p,_t:'reddit'})),
         ...FD.blogs.filter(p=>!p.id.startsWith('bl-d-')).slice(0,10).map(p=>({...p,_t:'blogs'})),
-        ...FD.news.filter(p=>!p.id.startsWith('nw-gn-')&&!p.id.startsWith('nw-ind-')).slice(0,10).map(p=>({...p,_t:'news'})),
+        ...FD.news.filter(p=>!p.id.startsWith('nw-gn-')).slice(0,10).map(p=>({...p,_t:'news'})),
     ].sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
     const h=all.map(p=>postCard(p,p._t)).join('');
     const af=document.getElementById('alertsFeed');if(af)af.innerHTML=h||'<div class="empty">Loading...</div>';
@@ -901,7 +983,7 @@ async function loadCachedData(){
         document.getElementById('tw-cnt').textContent=FD.twitter.filter(p=>p.id.startsWith('tw-vf-')).length;
         document.getElementById('rd-cnt').textContent=FD.reddit.filter(p=>!p.id.startsWith('rd-lnk-')).length;
         document.getElementById('bl-cnt').textContent=FD.blogs.filter(p=>!p.id.startsWith('bl-d-')).length;
-        document.getElementById('nw-cnt').textContent=FD.news.filter(p=>!p.id.startsWith('nw-gn-')&&!p.id.startsWith('nw-ind-')).length||FD.news.length;
+        document.getElementById('nw-cnt').textContent=FD.news.filter(p=>!p.id.startsWith('nw-gn-')).length;
         renderStats();renderAlerts();
         const gd=new Date(data._meta.generated_at);
         document.getElementById('lastUp').textContent=`Data: ${gd.toLocaleDateString('en-US',{month:'short',day:'numeric'})} ${gd.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}`;
@@ -916,8 +998,7 @@ function appendStaticEntries(){
     ['FinOps','cloud cost optimization','kubernetes cost','cloud waste','cloud cost management'].forEach((q,i)=>{FD.twitter.push({id:`tw-kw-${i}`,title:`Twitter: "${q}"`,preview:`Find tweets about "${q}" via Google.`,url:`https://www.google.com/search?q=site:x.com+OR+site:twitter.com+%22${encodeURIComponent(q)}%22&tbs=qdr:m`,source:'Industry',timestamp:Date.now()/1000-400-i,timeLabel:'Keyword'});});
     C.forEach(c=>{FD.reddit.push({id:`rd-lnk-${c.id}`,title:`${c.n} — Search Reddit`,preview:`Search Reddit for ${c.n} discussions.`,url:`https://www.reddit.com/search/?q=${encodeURIComponent(c.n)}&sort=new&t=month`,source:c.n,timestamp:Date.now()/1000-86400*20,timeLabel:'Search Reddit'});});
     C.forEach(c=>{FD.blogs.push({id:`bl-d-${c.id}`,title:`${c.n} Blog — Visit`,preview:`Visit ${c.n}'s blog.`,url:c.blog||c.site+'/blog/',source:c.n,timestamp:Date.now()/1000-86400*30,timeLabel:'Visit Blog'});});
-    C.forEach(c=>{FD.news.push({id:`nw-gn-${c.id}`,title:`${c.n} — Google News`,preview:`Search Google News for ${c.n}.`,url:`https://www.google.com/search?q=${encodeURIComponent(c.n+' cloud cost')}&tbm=nws&tbs=qdr:m`,source:c.n,timestamp:Date.now()/1000-86400*10,timeLabel:'Google News'});});
-    ['FinOps','cloud cost optimization','kubernetes cost management','cloud waste reduction'].forEach((q,i)=>{FD.news.push({id:`nw-ind-${i}`,title:`Google News: "${q}"`,preview:`Latest news about ${q}.`,url:`https://www.google.com/search?q=${encodeURIComponent(q)}&tbm=nws&tbs=qdr:w`,source:'Industry',timestamp:Date.now()/1000-86400*15-i,timeLabel:'Google News'});});
+    C.forEach(c=>{FD.news.push({id:`nw-gn-${c.id}`,title:`${c.n} — Google News`,preview:`Search Google News for ${c.n} funding, product launches, partnerships.`,url:`https://www.google.com/search?q=${encodeURIComponent('"'+c.n+'" cloud OR funding OR launch OR partnership')}&tbm=nws&tbs=qdr:m`,source:c.n,timestamp:Date.now()/1000-86400*10,timeLabel:'Google News'});});
 }
 
 // ============ LIVE FETCH (fallback when data.json unavailable) ============
@@ -932,7 +1013,7 @@ async function refreshAll(){
 }
 
 // ============ INIT ============
-renderCards();renderFeedList();upTs();renderStats();
+renderCards();renderFeedList();upTs();renderStats();renderBlogIdeas();
 (async()=>{
     const cached=await loadCachedData();
     if(!cached) await refreshAll();
