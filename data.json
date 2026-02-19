@@ -1,7 +1,7 @@
 {
   "_meta": {
-    "generated_at": "2026-02-19T11:29:47.670Z",
-    "generated_ts": 1771500587,
+    "generated_at": "2026-02-19T11:31:22.581Z",
+    "generated_ts": 1771500682,
     "version": 1,
     "source": "github-actions",
     "counts": {
@@ -14818,7 +14818,7 @@
       "timestamp": 1771491818,
       "subreddit": "dataengineering",
       "score": 5,
-      "comments": 4
+      "comments": 5
     },
     {
       "id": "rd-api-816",
@@ -14850,7 +14850,7 @@
       "source": "r/devops",
       "timestamp": 1771488830,
       "subreddit": "devops",
-      "score": 0,
+      "score": 1,
       "comments": 4
     },
     {
@@ -14949,7 +14949,7 @@
       "source": "r/sysadmin",
       "timestamp": 1771486669,
       "subreddit": "sysadmin",
-      "score": 10,
+      "score": 9,
       "comments": 9
     },
     {
@@ -15015,7 +15015,7 @@
       "source": "r/dataengineering",
       "timestamp": 1771482874,
       "subreddit": "dataengineering",
-      "score": 6,
+      "score": 7,
       "comments": 8
     },
     {
@@ -15048,8 +15048,8 @@
       "source": "r/sysadmin",
       "timestamp": 1771481650,
       "subreddit": "sysadmin",
-      "score": 6,
-      "comments": 12
+      "score": 8,
+      "comments": 13
     },
     {
       "id": "rd-api-792",
@@ -15059,7 +15059,7 @@
       "source": "r/dataengineering",
       "timestamp": 1771479798,
       "subreddit": "dataengineering",
-      "score": 8,
+      "score": 10,
       "comments": 4
     },
     {
@@ -15103,7 +15103,7 @@
       "source": "r/sysadmin",
       "timestamp": 1771476537,
       "subreddit": "sysadmin",
-      "score": 9,
+      "score": 7,
       "comments": 12
     },
     {
@@ -15136,8 +15136,8 @@
       "source": "r/sysadmin",
       "timestamp": 1771474944,
       "subreddit": "sysadmin",
-      "score": 21,
-      "comments": 89
+      "score": 19,
+      "comments": 90
     },
     {
       "id": "rd-api-793",
@@ -15202,7 +15202,7 @@
       "source": "r/sysadmin",
       "timestamp": 1771471826,
       "subreddit": "sysadmin",
-      "score": 26,
+      "score": 28,
       "comments": 21
     },
     {
@@ -15246,7 +15246,7 @@
       "source": "r/dataengineering",
       "timestamp": 1771466907,
       "subreddit": "dataengineering",
-      "score": 8,
+      "score": 10,
       "comments": 15
     },
     {
@@ -15257,7 +15257,7 @@
       "source": "r/sysadmin",
       "timestamp": 1771465404,
       "subreddit": "sysadmin",
-      "score": 895,
+      "score": 902,
       "comments": 143
     },
     {
@@ -15268,7 +15268,7 @@
       "source": "r/sysadmin",
       "timestamp": 1771464641,
       "subreddit": "sysadmin",
-      "score": 10,
+      "score": 9,
       "comments": 21
     },
     {
@@ -15301,7 +15301,7 @@
       "source": "r/sysadmin",
       "timestamp": 1771462272,
       "subreddit": "sysadmin",
-      "score": 6,
+      "score": 5,
       "comments": 11
     },
     {
@@ -15433,7 +15433,7 @@
       "source": "r/devops",
       "timestamp": 1771454669,
       "subreddit": "devops",
-      "score": 30,
+      "score": 26,
       "comments": 21
     },
     {
@@ -15455,7 +15455,7 @@
       "source": "r/googlecloud",
       "timestamp": 1771452783,
       "subreddit": "googlecloud",
-      "score": 8,
+      "score": 9,
       "comments": 4
     },
     {
@@ -15477,7 +15477,7 @@
       "source": "nOps",
       "timestamp": 1771450596,
       "subreddit": "FinOps",
-      "score": 3,
+      "score": 2,
       "comments": 3
     },
     {
@@ -15499,7 +15499,7 @@
       "source": "r/devops",
       "timestamp": 1771448223,
       "subreddit": "devops",
-      "score": 8,
+      "score": 6,
       "comments": 17
     },
     {
@@ -15552,7 +15552,7 @@
       "source": "r/aws",
       "timestamp": 1771446912,
       "subreddit": "aws",
-      "score": 64,
+      "score": 65,
       "comments": 35
     },
     {
@@ -15563,7 +15563,7 @@
       "source": "r/dataengineering",
       "timestamp": 1771445544,
       "subreddit": "dataengineering",
-      "score": 19,
+      "score": 18,
       "comments": 3
     },
     {
@@ -15596,7 +15596,7 @@
       "source": "r/aws",
       "timestamp": 1771442175,
       "subreddit": "aws",
-      "score": 11,
+      "score": 12,
       "comments": 3
     },
     {
@@ -15671,7 +15671,7 @@
       "source": "r/docker",
       "timestamp": 1771440533,
       "subreddit": "docker",
-      "score": 3,
+      "score": 1,
       "comments": 6
     },
     {
@@ -15803,7 +15803,7 @@
       "source": "r/dataengineering",
       "timestamp": 1771434152,
       "subreddit": "dataengineering",
-      "score": 82,
+      "score": 81,
       "comments": 97
     },
     {
@@ -15814,7 +15814,7 @@
       "source": "r/kubernetes",
       "timestamp": 1771433227,
       "subreddit": "kubernetes",
-      "score": 7,
+      "score": 9,
       "comments": 14
     },
     {
@@ -15869,7 +15869,7 @@
       "source": "r/azure",
       "timestamp": 1771432994,
       "subreddit": "AZURE",
-      "score": 16,
+      "score": 14,
       "comments": 33
     },
     {
@@ -15880,7 +15880,7 @@
       "source": "r/dataengineering",
       "timestamp": 1771432753,
       "subreddit": "dataengineering",
-      "score": 2,
+      "score": 5,
       "comments": 3
     },
     {
@@ -15957,7 +15957,7 @@
       "source": "r/azure",
       "timestamp": 1771429263,
       "subreddit": "AZURE",
-      "score": 6,
+      "score": 5,
       "comments": 4
     },
     {
@@ -15979,7 +15979,7 @@
       "source": "r/devops",
       "timestamp": 1771428858,
       "subreddit": "devops",
-      "score": 16,
+      "score": 15,
       "comments": 16
     },
     {
@@ -16012,7 +16012,7 @@
       "source": "r/kubernetes",
       "timestamp": 1771428070,
       "subreddit": "kubernetes",
-      "score": 3,
+      "score": 2,
       "comments": 0
     },
     {
@@ -16045,7 +16045,7 @@
       "source": "r/dataengineering",
       "timestamp": 1771427640,
       "subreddit": "dataengineering",
-      "score": 6,
+      "score": 9,
       "comments": 10
     },
     {
@@ -16111,7 +16111,7 @@
       "source": "r/aws",
       "timestamp": 1771423847,
       "subreddit": "aws",
-      "score": 5,
+      "score": 6,
       "comments": 11
     },
     {
@@ -16122,7 +16122,7 @@
       "source": "r/dataengineering",
       "timestamp": 1771423656,
       "subreddit": "dataengineering",
-      "score": 726,
+      "score": 721,
       "comments": 78
     },
     {
@@ -16133,7 +16133,7 @@
       "source": "r/dataengineering",
       "timestamp": 1771423525,
       "subreddit": "dataengineering",
-      "score": 3,
+      "score": 1,
       "comments": 6
     },
     {
@@ -16177,7 +16177,7 @@
       "source": "r/dataengineering",
       "timestamp": 1771422512,
       "subreddit": "dataengineering",
-      "score": 125,
+      "score": 122,
       "comments": 16
     },
     {
@@ -16254,7 +16254,7 @@
       "source": "r/kubernetes",
       "timestamp": 1771418884,
       "subreddit": "kubernetes",
-      "score": 61,
+      "score": 63,
       "comments": 6
     },
     {
@@ -16287,7 +16287,7 @@
       "source": "r/kubernetes",
       "timestamp": 1771414683,
       "subreddit": "kubernetes",
-      "score": 4,
+      "score": 5,
       "comments": 4
     },
     {
@@ -16331,7 +16331,7 @@
       "source": "r/googlecloud",
       "timestamp": 1771410228,
       "subreddit": "googlecloud",
-      "score": 2,
+      "score": 1,
       "comments": 3
     },
     {
@@ -16373,7 +16373,7 @@
       "source": "r/azure",
       "timestamp": 1771405974,
       "subreddit": "AZURE",
-      "score": 3,
+      "score": 2,
       "comments": 2
     },
     {
@@ -16417,7 +16417,7 @@
       "source": "r/googlecloud",
       "timestamp": 1771400112,
       "subreddit": "googlecloud",
-      "score": 4,
+      "score": 5,
       "comments": 3
     },
     {
@@ -16483,7 +16483,7 @@
       "source": "r/aws",
       "timestamp": 1771389794,
       "subreddit": "aws",
-      "score": 3,
+      "score": 5,
       "comments": 3
     },
     {
@@ -16494,7 +16494,7 @@
       "source": "r/kubernetes",
       "timestamp": 1771388570,
       "subreddit": "kubernetes",
-      "score": 103,
+      "score": 105,
       "comments": 70
     },
     {
@@ -16538,7 +16538,7 @@
       "source": "r/azure",
       "timestamp": 1771377193,
       "subreddit": "AZURE",
-      "score": 9,
+      "score": 10,
       "comments": 10
     },
     {
@@ -16549,7 +16549,7 @@
       "source": "r/finops",
       "timestamp": 1771376971,
       "subreddit": "FinOps",
-      "score": 8,
+      "score": 6,
       "comments": 2
     },
     {
@@ -16613,7 +16613,7 @@
       "source": "r/terraform",
       "timestamp": 1771364800,
       "subreddit": "Terraform",
-      "score": 10,
+      "score": 9,
       "comments": 20
     },
     {
@@ -16668,7 +16668,7 @@
       "source": "r/finops",
       "timestamp": 1771354246,
       "subreddit": "FinOps",
-      "score": 4,
+      "score": 3,
       "comments": 4
     },
     {
@@ -16690,7 +16690,7 @@
       "source": "r/kubernetes",
       "timestamp": 1771350501,
       "subreddit": "kubernetes",
-      "score": 24,
+      "score": 23,
       "comments": 23
     },
     {
@@ -16745,7 +16745,7 @@
       "source": "r/aws",
       "timestamp": 1771343190,
       "subreddit": "aws",
-      "score": 2,
+      "score": 6,
       "comments": 12
     },
     {
@@ -16765,7 +16765,7 @@
       "source": "r/aws",
       "timestamp": 1771342212,
       "subreddit": "aws",
-      "score": 6,
+      "score": 7,
       "comments": 17
     },
     {
@@ -16776,7 +16776,7 @@
       "source": "r/aws",
       "timestamp": 1771337013,
       "subreddit": "aws",
-      "score": 30,
+      "score": 27,
       "comments": 8
     },
     {
@@ -16798,7 +16798,7 @@
       "source": "r/docker",
       "timestamp": 1771332727,
       "subreddit": "docker",
-      "score": 7,
+      "score": 8,
       "comments": 3
     },
     {
@@ -16829,7 +16829,7 @@
       "source": "r/cloudcomputing",
       "timestamp": 1771324316,
       "subreddit": "cloudcomputing",
-      "score": 2,
+      "score": 4,
       "comments": 6
     },
     {
@@ -16840,7 +16840,7 @@
       "source": "r/docker",
       "timestamp": 1771316765,
       "subreddit": "docker",
-      "score": 5,
+      "score": 3,
       "comments": 1
     },
     {
@@ -16851,7 +16851,7 @@
       "source": "nOps",
       "timestamp": 1771307712,
       "subreddit": "FinOps",
-      "score": 10,
+      "score": 9,
       "comments": 21
     },
     {
@@ -16895,7 +16895,7 @@
       "source": "r/finops",
       "timestamp": 1771271056,
       "subreddit": "FinOps",
-      "score": 5,
+      "score": 4,
       "comments": 11
     },
     {
@@ -17036,7 +17036,7 @@
       "source": "r/terraform",
       "timestamp": 1771136069,
       "subreddit": "Terraform",
-      "score": 61,
+      "score": 62,
       "comments": 20
     },
     {
@@ -17067,7 +17067,7 @@
       "source": "r/terraform",
       "timestamp": 1771117402,
       "subreddit": "Terraform",
-      "score": 16,
+      "score": 15,
       "comments": 3
     },
     {
@@ -17109,7 +17109,7 @@
       "source": "r/finops",
       "timestamp": 1771016769,
       "subreddit": "FinOps",
-      "score": 2,
+      "score": 1,
       "comments": 0
     },
     {
@@ -17120,7 +17120,7 @@
       "source": "nOps",
       "timestamp": 1771015549,
       "subreddit": "FinOps",
-      "score": 9,
+      "score": 8,
       "comments": 8
     },
     {
@@ -17184,7 +17184,7 @@
       "source": "r/finops",
       "timestamp": 1770914148,
       "subreddit": "FinOps",
-      "score": 3,
+      "score": 2,
       "comments": 0
     },
     {
@@ -17195,7 +17195,7 @@
       "source": "r/cloudcomputing",
       "timestamp": 1770900818,
       "subreddit": "cloudcomputing",
-      "score": 5,
+      "score": 6,
       "comments": 6
     },
     {
@@ -17217,7 +17217,7 @@
       "source": "nOps",
       "timestamp": 1770822607,
       "subreddit": "FinOps",
-      "score": 9,
+      "score": 10,
       "comments": 13
     },
     {
@@ -17250,7 +17250,7 @@
       "source": "r/terraform",
       "timestamp": 1770756112,
       "subreddit": "Terraform",
-      "score": 6,
+      "score": 5,
       "comments": 11
     },
     {
@@ -17294,7 +17294,7 @@
       "source": "r/terraform",
       "timestamp": 1770708132,
       "subreddit": "Terraform",
-      "score": 3,
+      "score": 4,
       "comments": 2
     },
     {
@@ -17314,7 +17314,7 @@
       "source": "CloudHealth",
       "timestamp": 1770683814,
       "subreddit": "FinOps",
-      "score": 15,
+      "score": 13,
       "comments": 33
     },
     {
@@ -17336,7 +17336,7 @@
       "source": "r/finops",
       "timestamp": 1770643282,
       "subreddit": "FinOps",
-      "score": 4,
+      "score": 5,
       "comments": 2
     },
     {
@@ -17347,7 +17347,7 @@
       "source": "r/finops",
       "timestamp": 1770642343,
       "subreddit": "FinOps",
-      "score": 5,
+      "score": 6,
       "comments": 12
     },
     {
@@ -17389,7 +17389,7 @@
       "source": "r/cloudcomputing",
       "timestamp": 1770474715,
       "subreddit": "cloudcomputing",
-      "score": 7,
+      "score": 9,
       "comments": 12
     },
     {
@@ -17400,7 +17400,7 @@
       "source": "r/terraform",
       "timestamp": 1770467582,
       "subreddit": "Terraform",
-      "score": 4,
+      "score": 3,
       "comments": 4
     },
     {
@@ -17422,7 +17422,7 @@
       "source": "r/finops",
       "timestamp": 1770402332,
       "subreddit": "FinOps",
-      "score": 3,
+      "score": 4,
       "comments": 5
     },
     {
@@ -17433,7 +17433,7 @@
       "source": "r/terraform",
       "timestamp": 1770375945,
       "subreddit": "Terraform",
-      "score": 8,
+      "score": 7,
       "comments": 11
     },
     {
@@ -17444,7 +17444,7 @@
       "source": "r/terraform",
       "timestamp": 1770373608,
       "subreddit": "Terraform",
-      "score": 20,
+      "score": 19,
       "comments": 14
     },
     {
@@ -17488,7 +17488,7 @@
       "source": "r/cloudcomputing",
       "timestamp": 1770266189,
       "subreddit": "cloudcomputing",
-      "score": 13,
+      "score": 12,
       "comments": 19
     },
     {
@@ -17543,7 +17543,7 @@
       "source": "r/cloudcomputing",
       "timestamp": 1769847255,
       "subreddit": "cloudcomputing",
-      "score": 9,
+      "score": 10,
       "comments": 11
     },
     {
@@ -17608,7 +17608,7 @@
       "source": "r/cloudcomputing",
       "timestamp": 1768833687,
       "subreddit": "cloudcomputing",
-      "score": 17,
+      "score": 15,
       "comments": 10
     },
     {
@@ -17637,7 +17637,7 @@
       "source": "r/cloudcomputing",
       "timestamp": 1768497733,
       "subreddit": "cloudcomputing",
-      "score": 16,
+      "score": 14,
       "comments": 15
     },
     {
@@ -17648,7 +17648,7 @@
       "source": "r/cloudcomputing",
       "timestamp": 1768120039,
       "subreddit": "cloudcomputing",
-      "score": 7,
+      "score": 9,
       "comments": 3
     },
     {
@@ -17668,7 +17668,7 @@
       "source": "r/cloudcomputing",
       "timestamp": 1768035209,
       "subreddit": "cloudcomputing",
-      "score": 13,
+      "score": 12,
       "comments": 78
     },
     {
@@ -17697,7 +17697,7 @@
       "source": "r/cloudcomputing",
       "timestamp": 1767683322,
       "subreddit": "cloudcomputing",
-      "score": 9,
+      "score": 10,
       "comments": 15
     },
     {
@@ -17790,7 +17790,7 @@
       "source": "r/cloudcomputing",
       "timestamp": 1765986611,
       "subreddit": "cloudcomputing",
-      "score": 15,
+      "score": 13,
       "comments": 3
     },
     {
