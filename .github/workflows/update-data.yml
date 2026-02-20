@@ -2,8 +2,10 @@ name: Update Competitor Intel Data
 
 on:
   schedule:
-    # Run at 06:00 UTC and 18:00 UTC daily (twice/day)
+    # Run 4x daily — every 6 hours (midnight, 6am, noon, 6pm UTC)
+    - cron: '0 0 * * *'
     - cron: '0 6 * * *'
+    - cron: '0 12 * * *'
     - cron: '0 18 * * *'
   workflow_dispatch: # Manual trigger from GitHub UI
 

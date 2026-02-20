@@ -193,8 +193,9 @@
         <span class="hdr-badge">Competitor Intel</span>
     </div>
     <div class="hdr-r">
-        <div class="pulse-dot"><span class="d"></span>Auto-updates 2x daily</div>
+        <div class="pulse-dot"><span class="d"></span>Auto-updates 4x daily</div>
         <span class="ts" id="lastUp">Loading...</span>
+        <span class="ts" id="nextUp" style="color:var(--green)"></span>
         <button class="bell" onclick="toggleNotif()" title="Alerts">&#x1F514;<span class="b" id="nc">0</span></button>
     </div>
 </header>
@@ -1015,7 +1016,8 @@ async function loadCachedData(){
         renderStats();renderAlerts();
         const gd=new Date(data._meta.generated_at);
         document.getElementById('lastUp').textContent=`Data: ${gd.toLocaleDateString('en-US',{month:'short',day:'numeric'})} ${gd.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}`;
-        toast('Loaded cached data (auto-updated daily)');
+        const ageH=Math.round(age/3600);
+        toast(`Loaded fresh data (${ageH<1?'just now':ageH+'h ago'} — auto-updates 4x daily)`);
         return true;
     }catch(e){console.log('data.json not available:',e.message);return false;}
 }
@@ -1040,11 +1042,39 @@ async function refreshAll(){
     toast(`Done! X:${twR} Reddit:${rdR} Blogs:${blR} News:${nwR} LI:${liR}`);
 }
 
+// ============ AUTO-RELOAD: refresh data.json every 6 hours automatically ============
+function showNextUpdate(generatedTs){
+    const el=document.getElementById('nextUp');if(!el)return;
+    // Data updates at 00:00, 06:00, 12:00, 18:00 UTC — show next one
+    const now=new Date();
+    const h=now.getUTCHours();
+    const nextH=[0,6,12,18].find(t=>t>h)||24;
+    const next=new Date(now);next.setUTCHours(nextH%24,5,0,0);
+    if(nextH===24)next.setUTCDate(next.getUTCDate()+1);
+    function tick(){
+        const diff=next-Date.now();
+        if(diff<=0){el.textContent='Updating now...';setTimeout(()=>location.reload(),60000);return;}
+        const hh=Math.floor(diff/3600000);const mm=Math.floor((diff%3600000)/60000);
+        el.textContent=`Next update: ${hh}h ${mm}m`;
+    }
+    tick();setInterval(tick,60000);
+}
+
+// Auto-reload page every 6 hours to get fresh data
+let autoReloadTimer=null;
+function scheduleAutoReload(){
+    if(autoReloadTimer)clearTimeout(autoReloadTimer);
+    // Reload in 6 hours
+    autoReloadTimer=setTimeout(()=>{location.reload();},6*3600*1000);
+}
+
 // ============ INIT ============
 renderCards();renderFeedList();upTs();renderStats();renderBlogIdeas();
 (async()=>{
     const cached=await loadCachedData();
     if(!cached) await refreshAll();
+    showNextUpdate();
+    scheduleAutoReload();
 })();
 </script>
 </body>
