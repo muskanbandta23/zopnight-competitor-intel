@@ -629,9 +629,11 @@ async function loadReddit(){
     const fd=document.getElementById('redditFeed');
     const btn=document.getElementById('rdRBtn');const spn=document.getElementById('rdSpn');
     btn.classList.add('ld');spn.classList.add('spn');
-    fd.innerHTML='<div class="lds"><div class="ldsp"></div>Fetching latest Reddit posts...</div>';
+    fd.innerHTML='<div class="lds"><div class="ldsp"></div>Fetching latest Reddit posts (last 7 days)...</div>';
     FD.reddit=[];
     const seen=new Set();
+    const SEVEN_DAYS=7*24*3600;
+    const cutoff=Date.now()/1000-SEVEN_DAYS;
 
     // Helper: fetch Reddit JSON API
     async function rdJSON(url){
@@ -643,13 +645,13 @@ async function loadReddit(){
         }catch(e){return[];}
     }
 
-    // Only keep posts from relevant tech subreddits (filter out junk)
     const VALID_SUBS=new Set(['finops','aws','azure','googlecloud','kubernetes','devops','cloudcomputing','docker','terraform','dataengineering','sysadmin','sre','netsec','homelab','selfhosted','programming','softwareengineering','microservices','databricks','serverless','linux','golang','python','java','node','webdev','startups','saas','techleadership','cto','itstrategy','msp']);
 
     function addPost(p,label,sub){
         if(!p.title||seen.has(p.title))return;
+        // Strict 7-day filter — discard old posts
+        if(p.created_utc&&p.created_utc<cutoff)return;
         const pSub=(p.subreddit||sub||'').toLowerCase();
-        // For search results, only keep posts from relevant subs
         if(!VALID_SUBS.has(pSub)&&!label.startsWith('r/'))return;
         seen.add(p.title);
         const tl=(p.title+' '+(p.selftext||'')).toLowerCase();
@@ -665,33 +667,19 @@ async function loadReddit(){
         });
     }
 
-    // === 1. LATEST POSTS from key cloud/FinOps subreddits (newest first) ===
-    const subs=[
-        {sub:'finops',label:'r/finops'},
-        {sub:'aws',label:'r/aws'},
-        {sub:'googlecloud',label:'r/googlecloud'},
-        {sub:'azure',label:'r/azure'},
-        {sub:'kubernetes',label:'r/kubernetes'},
-        {sub:'devops',label:'r/devops'},
-        {sub:'cloudcomputing',label:'r/cloudcomputing'},
-        {sub:'docker',label:'r/docker'},
-        {sub:'terraform',label:'r/terraform'},
-        {sub:'dataengineering',label:'r/dataengineering'},
-        {sub:'sysadmin',label:'r/sysadmin'},
-    ];
-
-    // Fetch subreddits in parallel batches of 3
+    // === 1. LATEST POSTS from key cloud/FinOps subreddits ===
+    const subs=['finops','aws','googlecloud','azure','kubernetes','devops','cloudcomputing','docker','terraform','dataengineering','sysadmin'];
     for(let i=0;i<subs.length;i+=3){
         const chunk=subs.slice(i,i+3);
-        await Promise.all(chunk.map(async({sub,label})=>{
-            const posts=await rdJSON(`https://www.reddit.com/r/${sub}/new.json?limit=25&t=week`);
-            posts.forEach(p=>addPost(p,label,sub));
+        await Promise.all(chunk.map(async(sub)=>{
+            const posts=await rdJSON(`https://www.reddit.com/r/${sub}/new.json?limit=30&t=week`);
+            posts.forEach(p=>addPost(p,`r/${sub}`,sub));
         }));
         renderFd('reddit');renderChips('reddit');
-        await new Promise(r=>setTimeout(r,600));
+        await new Promise(r=>setTimeout(r,800));
     }
 
-    // === 2. SEARCH for competitor names (all 23) ===
+    // === 2. SEARCH competitor names ===
     const compSearches=[
         'CloudZero OR Kubecost OR "Cast AI" OR nOps OR "Spot.io"',
         'Densify OR Flexera OR Harness OR Turbonomic OR ScaleOps',
@@ -701,34 +689,29 @@ async function loadReddit(){
     ];
     for(const q of compSearches){
         const posts=await rdJSON(`https://www.reddit.com/search.json?q=${encodeURIComponent(q)}&sort=new&t=week&limit=25`);
-        posts.forEach(p=>addPost(p,'Competitor Search',p.subreddit));
-        await new Promise(r=>setTimeout(r,700));
+        posts.forEach(p=>addPost(p,'Competitor',p.subreddit));
+        await new Promise(r=>setTimeout(r,800));
     }
     renderFd('reddit');renderChips('reddit');
 
-    // === 3. SEARCH cloud keywords WITHIN relevant subreddits only (prevents junk results) ===
+    // === 3. Cloud keyword searches ===
     const cloudKW=[
-        '"cloud cost optimization" OR "cloud cost reduction" OR "cloud savings" OR "cloud waste"',
-        '"AWS cost" OR "AWS billing" OR "AWS reserved instances" OR "AWS savings"',
-        '"Azure cost" OR "Azure billing" OR "Azure savings"',
-        '"GCP cost" OR "GCP billing" OR "Google Cloud pricing"',
+        '"cloud cost" OR "cloud savings" OR "cloud waste" OR FinOps',
+        '"AWS cost" OR "AWS billing" OR "reserved instances" OR "savings plans"',
+        '"Azure cost" OR "GCP cost" OR "Google Cloud pricing"',
         '"kubernetes cost" OR "k8s cost" OR "container cost"',
-        '"EC2 rightsizing" OR "EC2 savings" OR "spot instance" cost',
-        '"rightsizing" cloud OR "right-sizing" cloud OR overprovisioned cloud',
-        'FinOps OR "cloud financial management" OR "cloud budget"',
-        '"reserved instances" OR "savings plans" OR "committed use discount"',
-        '"Databricks cost" OR "Databricks pricing" OR "Databricks optimization"',
-        '"EKS cost" OR "GKE cost" OR "AKS cost" OR "managed kubernetes"',
+        '"rightsizing" OR "spot instance" OR "EC2 savings" OR overprovisioned',
+        '"Databricks cost" OR "Databricks pricing" OR "EKS cost" OR "GKE cost"',
     ];
-    const relSubs='subreddit:aws OR subreddit:azure OR subreddit:googlecloud OR subreddit:kubernetes OR subreddit:devops OR subreddit:cloudcomputing OR subreddit:finops OR subreddit:terraform OR subreddit:sysadmin OR subreddit:dataengineering OR subreddit:docker';
+    const relSubs='subreddit:aws OR subreddit:azure OR subreddit:googlecloud OR subreddit:kubernetes OR subreddit:devops OR subreddit:cloudcomputing OR subreddit:finops OR subreddit:terraform OR subreddit:sysadmin';
     for(const q of cloudKW){
-        const posts=await rdJSON(`https://www.reddit.com/search.json?q=(${encodeURIComponent(q)}) (${encodeURIComponent(relSubs)})&sort=new&t=week&limit=15`);
+        const posts=await rdJSON(`https://www.reddit.com/search.json?q=(${encodeURIComponent(q)}) (${encodeURIComponent(relSubs)})&sort=new&t=week&limit=20`);
         posts.forEach(p=>addPost(p,q.match(/"([^"]+)"/)?.[1]||'Cloud',p.subreddit));
         renderFd('reddit');renderChips('reddit');
-        await new Promise(r=>setTimeout(r,600));
+        await new Promise(r=>setTimeout(r,800));
     }
 
-    // === 4. Direct Reddit search links for each competitor (always visible) ===
+    // === 4. Direct search links for each competitor ===
     C.forEach(c=>{
         FD.reddit.push({
             id:`rd-lnk-${c.id}`,
@@ -1018,7 +1001,10 @@ async function loadCachedData(){
         const data=await res.json();
         const age=(Date.now()/1000)-(data._meta?.generated_ts||0);
         if(age>36*3600){console.log('data.json stale ('+Math.round(age/3600)+'h), falling back to live');return false;}
-        FD.linkedin=data.linkedin||[];FD.twitter=data.twitter||[];FD.reddit=data.reddit||[];FD.blogs=data.blogs||[];FD.news=data.news||[];
+        const rdCutoff=Date.now()/1000-7*24*3600;
+        FD.linkedin=data.linkedin||[];FD.twitter=data.twitter||[];
+        FD.reddit=(data.reddit||[]).filter(p=>!p.timestamp||p.timestamp>rdCutoff);
+        FD.blogs=data.blogs||[];FD.news=data.news||[];
         appendStaticEntries();
         ['linkedin','twitter','reddit','blogs','news'].forEach(t=>{renderFd(t);renderChips(t);});
         document.getElementById('li-cnt').textContent=FD.linkedin.filter(p=>!p.id.startsWith('li-pg-')).length;
