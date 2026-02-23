@@ -1,6 +1,7 @@
 # ZopNight Competitor Intelligence Dashboard
 
-**Live:** [https://muskanbandta23.github.io/zopnight-competitor-intel/](https://muskanbandta23.github.io/zopnight-competitor-intel/)
+**Live:** https://muskanbandta23.github.io/zopnight-competitor-intel/
+
 
 Real-time competitor intelligence dashboard for **ZopNight** (FinOps product for Zopnight). Tracks 23 cloud cost optimization competitors across LinkedIn, X/Twitter, Reddit, Blogs, and News — **auto-updated twice daily** via GitHub Actions.
 
