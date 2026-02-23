@@ -200,8 +200,7 @@
         .auth-btn:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(108,92,231,.4)}
         .auth-err{color:var(--red);font-size:12px;margin-top:10px;display:none}
         .auth-err.show{display:block}
-        .auth-remember{display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:13px;color:var(--txt2)}
-        .auth-remember input{accent-color:var(--accent)}
+        .auth-note{font-size:11px;color:var(--txt3);margin-bottom:14px}
     </style>
 </head>
 <body>
@@ -212,7 +211,7 @@
         <h2>Competitor Intelligence</h2>
         <p>Enter password to access the dashboard</p>
         <input type="password" class="auth-input" id="authPwd" placeholder="Password" onkeydown="if(event.key==='Enter')authLogin()">
-        <label class="auth-remember"><input type="checkbox" id="authRemember" checked> Remember for 7 days</label>
+        <div class="auth-note">Session expires after 5 minutes</div>
         <button class="auth-btn" onclick="authLogin()">Access Dashboard</button>
         <div class="auth-err" id="authErr">Incorrect password. Try again.</div>
     </div>
@@ -246,8 +245,7 @@ async function authLogin(){
     const pwd=document.getElementById('authPwd').value;
     const hash=await sha256(pwd);
     if(hash===AUTH_HASH){
-        const remember=document.getElementById('authRemember').checked;
-        const expires=Date.now()+(remember?7*24*3600*1000:3600*1000);
+        const expires=Date.now()+(5*60*1000); // 5 minutes only
         localStorage.setItem(AUTH_KEY,JSON.stringify({hash:AUTH_HASH,expires}));
         document.getElementById('authOverlay').classList.add('hidden');
         document.getElementById('authErr').classList.remove('show');
