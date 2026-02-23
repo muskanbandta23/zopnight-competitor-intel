@@ -145,3 +145,31 @@ To update data outside the twice-daily schedule:
 
 
 Made by Muskan Bandta
+
+
+
+
+
+1. Every 6 hours (00:00, 06:00, 12:00, 18:00 UTC), GitHub automatically runs a scheduled job.
+
+2. That job runs your file: fetch-data.js.
+
+3. That script goes out and collects fresh data:
+
+4. Blogs → directly from RSS feeds
+
+5. Reddit → from Reddit’s JSON API (last 7 days only)
+
+6. News → from Google News RSS
+
+7. LinkedIn → via Google News (because LinkedIn blocks scraping)
+
+8. Twitter → not fetched, only hardcoded links
+
+9. All that fresh data gets saved into data.json.
+
+10. GitHub automatically commits and pushes the updated data.json.
+
+11. GitHub Pages rebuilds the website.
+
+12. When someone opens your site, it loads the new data.json.
