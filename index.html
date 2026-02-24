@@ -217,16 +217,42 @@
     </div>
 </div>
 <script>
-// Password hash (SHA-256 of the password — password is NOT stored in plaintext)
 const AUTH_HASH='bcc6ed52dedc5a6cbbb4010bbac1b481be235079d4e355b8d5fcdd110bd123ba';
 const AUTH_KEY='zn_auth_token';
+const AUTH_TIMEOUT=5*60*1000; // 5 minutes
+let authLogoutTimer=null;
+let authCountdownTimer=null;
 
 async function sha256(msg){
     const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-// Check if already authenticated
+function authLogout(){
+    localStorage.removeItem(AUTH_KEY);
+    if(authLogoutTimer)clearTimeout(authLogoutTimer);
+    if(authCountdownTimer)clearInterval(authCountdownTimer);
+    document.getElementById('authOverlay').classList.remove('hidden');
+    document.getElementById('authPwd').value='';
+    document.getElementById('authErr').classList.remove('show');
+    document.getElementById('authPwd').focus();
+}
+
+function startAuthTimer(expiresAt){
+    if(authLogoutTimer)clearTimeout(authLogoutTimer);
+    if(authCountdownTimer)clearInterval(authCountdownTimer);
+    const remaining=expiresAt-Date.now();
+    if(remaining<=0){authLogout();return;}
+    // Auto-logout when time expires
+    authLogoutTimer=setTimeout(authLogout,remaining);
+    // Countdown check every 10 seconds — force logout if expired
+    authCountdownTimer=setInterval(()=>{
+        const left=expiresAt-Date.now();
+        if(left<=0){authLogout();}
+    },10000);
+}
+
+// Check if already authenticated on page load
 (function checkAuth(){
     const saved=localStorage.getItem(AUTH_KEY);
     if(saved){
@@ -234,6 +260,7 @@ async function sha256(msg){
             const d=JSON.parse(saved);
             if(d.hash===AUTH_HASH && d.expires>Date.now()){
                 document.getElementById('authOverlay').classList.add('hidden');
+                startAuthTimer(d.expires);
                 return;
             }
         }catch(e){}
@@ -245,10 +272,11 @@ async function authLogin(){
     const pwd=document.getElementById('authPwd').value;
     const hash=await sha256(pwd);
     if(hash===AUTH_HASH){
-        const expires=Date.now()+(5*60*1000); // 5 minutes only
+        const expires=Date.now()+AUTH_TIMEOUT;
         localStorage.setItem(AUTH_KEY,JSON.stringify({hash:AUTH_HASH,expires}));
         document.getElementById('authOverlay').classList.add('hidden');
         document.getElementById('authErr').classList.remove('show');
+        startAuthTimer(expires);
     }else{
         document.getElementById('authErr').classList.add('show');
         document.getElementById('authPwd').value='';
