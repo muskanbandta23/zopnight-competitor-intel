@@ -36,6 +36,12 @@ const COMPETITORS = [
   { id:'gcpcost', name:'GCP Cost Mgmt', threat:'low', blog_feed:null, x:'googlecloud', li_slug:'google-cloud' },
   { id:'anodot', name:'Anodot', threat:'low', blog_feed:'https://www.anodot.com/blog/feed/', x:'TeamAnodot', li_slug:'anodot' },
   { id:'holori', name:'Holori', threat:'low', blog_feed:null, x:'holori_cloud', li_slug:'holori' },
+  { id:'awscost', name:'AWS Cost Tools', threat:'low', blog_feed:null, x:'awscloud', li_slug:'amazon-web-services' },
+  { id:'azurecost', name:'Azure Advisor', threat:'low', blog_feed:null, x:'Azure', li_slug:'microsoft-azure' },
+  { id:'cloudcheckr', name:'CloudCheckr', threat:'low', blog_feed:null, x:'CloudCheckr', li_slug:'cloudcheckr' },
+  { id:'prosperops', name:'ProsperOps', threat:'low', blog_feed:'https://www.prosperops.com/blog/feed/', x:'ProsperOps', li_slug:'prosperops' },
+  { id:'doit', name:'DoiT International', threat:'low', blog_feed:'https://www.doit.com/blog/feed/', x:'doitintl', li_slug:'doitintl' },
+  { id:'infracost', name:'Infracost', threat:'low', blog_feed:'https://www.infracost.io/blog/feed/', x:'infracost', li_slug:'infracost' },
 ];
 
 // ── Helpers ──
