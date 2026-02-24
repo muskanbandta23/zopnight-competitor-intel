@@ -1,0 +1,44 @@
+name: Auto Merge Feature Branches
+
+on:
+  push:
+    branches:
+      - 'claude/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and merge PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          echo "Auto-merging $BRANCH_NAME into main..."
+
+          # Create PR
+          PR_URL=$(gh pr create \
+            --base main \
+            --head "$BRANCH_NAME" \
+            --title "Auto-merge: $BRANCH_NAME" \
+            --body "Automated merge from Claude Code session." \
+            2>/dev/null || echo "exists")
+
+          if [ "$PR_URL" = "exists" ]; then
+            PR_URL=$(gh pr list --head "$BRANCH_NAME" --json url -q '.[0].url')
+          fi
+
+          echo "PR: $PR_URL"
+
+          # Merge PR
+          gh pr merge "$PR_URL" --merge --auto || gh pr merge "$PR_URL" --merge
