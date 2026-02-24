@@ -201,9 +201,6 @@
         .auth-err{color:var(--red);font-size:12px;margin-top:10px;display:none}
         .auth-err.show{display:block}
         .auth-note{font-size:11px;color:var(--txt3);margin-bottom:14px}
-        .auth-remember{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;cursor:pointer}
-        .auth-remember input[type="checkbox"]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
-        .auth-remember label{font-size:12px;color:var(--txt2);cursor:pointer;user-select:none}
     </style>
 </head>
 <body>
@@ -214,16 +211,14 @@
         <h2>Competitor Intelligence</h2>
         <p>Enter password to access the dashboard</p>
         <input type="password" class="auth-input" id="authPwd" placeholder="Password" onkeydown="if(event.key==='Enter')authLogin()">
-        <div class="auth-remember"><input type="checkbox" id="authRemember"><label for="authRemember">Remember Me</label></div>
-        <div class="auth-note">Auto-logout after 5 min inactivity &bull; "Remember Me" stays logged in</div>
+        <div class="auth-note">Session lasts 24 hours &bull; Re-enter password after expiry</div>
         <button class="auth-btn" onclick="authLogin()">Access Dashboard</button>
         <div class="auth-err" id="authErr">Incorrect password. Try again.</div>
     </div>
 </div>
 <script>
 const AUTH_HASH='bcc6ed52dedc5a6cbbb4010bbac1b481be235079d4e355b8d5fcdd110bd123ba';
-const AUTH_TIMEOUT=5*60*1000; // 5 minutes in ms
-let authTimer=null;
+const AUTH_24H=24*60*60*1000; // 24 hours in ms
 
 async function sha256(msg){
     const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
@@ -231,32 +226,22 @@ async function sha256(msg){
 }
 
 function authLogout(){
-    sessionStorage.removeItem('zn_auth');
-    // Don't clear localStorage remember — user must uncheck that manually
+    localStorage.removeItem('zn_auth_time');
     document.getElementById('authOverlay').classList.remove('hidden');
     document.getElementById('authPwd').value='';
-    if(authTimer){clearTimeout(authTimer);authTimer=null;}
 }
 
-function startAutoLogout(){
-    // Only auto-logout if NOT "Remember Me"
-    if(localStorage.getItem('zn_remember')==='1') return;
-    if(authTimer) clearTimeout(authTimer);
-    authTimer=setTimeout(()=>{authLogout();},AUTH_TIMEOUT);
-}
-
-function resetAutoLogout(){
-    if(localStorage.getItem('zn_remember')==='1') return;
-    startAutoLogout();
-}
-
-// Check if already authenticated (survives refresh)
+// Check if already authenticated and within 24 hours
 (function checkAuth(){
-    const remembered=localStorage.getItem('zn_remember')==='1';
-    const sessionAuth=sessionStorage.getItem('zn_auth')==='1';
-    if(remembered || sessionAuth){
+    const loginTime=parseInt(localStorage.getItem('zn_auth_time')||'0');
+    if(loginTime && (Date.now()-loginTime < AUTH_24H)){
         document.getElementById('authOverlay').classList.add('hidden');
-        if(!remembered) startAutoLogout();
+        // Set a timeout for remaining time
+        const remaining=AUTH_24H-(Date.now()-loginTime);
+        setTimeout(()=>{authLogout();},remaining);
+    }else{
+        // Expired or never logged in — clear and show login
+        localStorage.removeItem('zn_auth_time');
     }
 })();
 
@@ -264,27 +249,17 @@ async function authLogin(){
     const pwd=document.getElementById('authPwd').value;
     const hash=await sha256(pwd);
     if(hash===AUTH_HASH){
-        const remember=document.getElementById('authRemember').checked;
-        if(remember){
-            localStorage.setItem('zn_remember','1');
-        }else{
-            localStorage.removeItem('zn_remember');
-            sessionStorage.setItem('zn_auth','1');
-            startAutoLogout();
-        }
+        localStorage.setItem('zn_auth_time',Date.now().toString());
         document.getElementById('authOverlay').classList.add('hidden');
         document.getElementById('authErr').classList.remove('show');
+        // Auto-logout after 24 hours
+        setTimeout(()=>{authLogout();},AUTH_24H);
     }else{
         document.getElementById('authErr').classList.add('show');
         document.getElementById('authPwd').value='';
         document.getElementById('authPwd').focus();
     }
 }
-
-// Reset 5-min timer on any user activity
-['mousemove','keydown','click','scroll','touchstart'].forEach(evt=>{
-    document.addEventListener(evt,resetAutoLogout,{passive:true});
-});
 </script>
 
 <header class="hdr">
