@@ -201,6 +201,9 @@
         .auth-err{color:var(--red);font-size:12px;margin-top:10px;display:none}
         .auth-err.show{display:block}
         .auth-note{font-size:11px;color:var(--txt3);margin-bottom:14px}
+        .auth-remember{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;cursor:pointer}
+        .auth-remember input[type="checkbox"]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+        .auth-remember label{font-size:12px;color:var(--txt2);cursor:pointer;user-select:none}
     </style>
 </head>
 <body>
@@ -211,26 +214,64 @@
         <h2>Competitor Intelligence</h2>
         <p>Enter password to access the dashboard</p>
         <input type="password" class="auth-input" id="authPwd" placeholder="Password" onkeydown="if(event.key==='Enter')authLogin()">
-        <div class="auth-note">Password required on every visit</div>
+        <div class="auth-remember"><input type="checkbox" id="authRemember"><label for="authRemember">Remember Me</label></div>
+        <div class="auth-note">Auto-logout after 5 min inactivity &bull; "Remember Me" stays logged in</div>
         <button class="auth-btn" onclick="authLogin()">Access Dashboard</button>
         <div class="auth-err" id="authErr">Incorrect password. Try again.</div>
     </div>
 </div>
 <script>
 const AUTH_HASH='bcc6ed52dedc5a6cbbb4010bbac1b481be235079d4e355b8d5fcdd110bd123ba';
-
-// Clear any old saved auth on every page load — always require password
-localStorage.removeItem('zn_auth_token');
+const AUTH_TIMEOUT=5*60*1000; // 5 minutes in ms
+let authTimer=null;
 
 async function sha256(msg){
     const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
+function authLogout(){
+    sessionStorage.removeItem('zn_auth');
+    // Don't clear localStorage remember — user must uncheck that manually
+    document.getElementById('authOverlay').classList.remove('hidden');
+    document.getElementById('authPwd').value='';
+    if(authTimer){clearTimeout(authTimer);authTimer=null;}
+}
+
+function startAutoLogout(){
+    // Only auto-logout if NOT "Remember Me"
+    if(localStorage.getItem('zn_remember')==='1') return;
+    if(authTimer) clearTimeout(authTimer);
+    authTimer=setTimeout(()=>{authLogout();},AUTH_TIMEOUT);
+}
+
+function resetAutoLogout(){
+    if(localStorage.getItem('zn_remember')==='1') return;
+    startAutoLogout();
+}
+
+// Check if already authenticated (survives refresh)
+(function checkAuth(){
+    const remembered=localStorage.getItem('zn_remember')==='1';
+    const sessionAuth=sessionStorage.getItem('zn_auth')==='1';
+    if(remembered || sessionAuth){
+        document.getElementById('authOverlay').classList.add('hidden');
+        if(!remembered) startAutoLogout();
+    }
+})();
+
 async function authLogin(){
     const pwd=document.getElementById('authPwd').value;
     const hash=await sha256(pwd);
     if(hash===AUTH_HASH){
+        const remember=document.getElementById('authRemember').checked;
+        if(remember){
+            localStorage.setItem('zn_remember','1');
+        }else{
+            localStorage.removeItem('zn_remember');
+            sessionStorage.setItem('zn_auth','1');
+            startAutoLogout();
+        }
         document.getElementById('authOverlay').classList.add('hidden');
         document.getElementById('authErr').classList.remove('show');
     }else{
@@ -239,6 +280,11 @@ async function authLogin(){
         document.getElementById('authPwd').focus();
     }
 }
+
+// Reset 5-min timer on any user activity
+['mousemove','keydown','click','scroll','touchstart'].forEach(evt=>{
+    document.addEventListener(evt,resetAutoLogout,{passive:true});
+});
 </script>
 
 <header class="hdr">
