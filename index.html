@@ -258,6 +258,7 @@ async function authLogin(){
     <button class="nav-t" data-tab="comparison"><span class="ic">&#x1F4CA;</span> Comparison</button>
     <button class="nav-t" data-tab="advantages"><span class="ic">&#x1F4AA;</span> Strengths</button>
     <button class="nav-t" data-tab="gaps"><span class="ic">&#x26A0;&#xFE0F;</span> Gaps</button>
+    <button class="nav-t" data-tab="research"><span class="ic">&#x1F4D1;</span> Research</button>
     <button class="nav-t" data-tab="alerts"><span class="ic">&#x1F514;</span> Alerts</button>
     <div class="nav-sep"></div>
     <button class="nav-t" data-tab="linkedin"><span class="ic" style="color:var(--li);font-weight:800">in</span> LinkedIn <span class="cnt" id="li-cnt">0</span></button>
@@ -288,65 +289,218 @@ async function authLogin(){
 </div>
 
 <div class="tc" id="tab-comparison">
-    <div class="stitle"><span>&#x1F4CA;</span> Feature Comparison</div>
+    <div class="stitle"><span>&#x1F4CA;</span> Feature Comparison <span class="sub">&mdash; Based on research across 9 competitive analysis documents</span></div>
     <div class="twrap">
-        <table class="ctbl"><thead><tr><th>Feature</th><th>ZopNight</th><th>CloudZero</th><th>Kubecost</th><th>Cast AI</th><th>nOps</th><th>Spot.io</th><th>Densify</th><th>Datadog</th></tr></thead>
+        <table class="ctbl"><thead><tr><th>Feature</th><th>ZopNight</th><th>CloudZero</th><th>Kubecost</th><th>Cast AI</th><th>nOps</th><th>Spot.io</th><th>Densify</th><th>Datadog</th><th>Finout</th><th>CloudHealth</th><th>Cloudability</th><th>Harness</th><th>Flexera</th><th>Turbonomic</th></tr></thead>
         <tbody>
-            <tr><td class="fn">One-Click ON/OFF</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
-            <tr><td class="fn">Group Env Toggles</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
-            <tr><td class="fn">Auto Grouping</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
-            <tr><td class="fn">Showback</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td></tr>
-            <tr><td class="fn">ChargeBack</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td></tr>
-            <tr><td class="fn">Anomaly Detection</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td></tr>
-            <tr><td class="fn">Budget Prediction</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td></tr>
-            <tr><td class="fn">RI/SP Recommendations</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
-            <tr><td class="fn">Event Readiness</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
-            <tr><td class="fn">One-Click Rec Execution</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td></tr>
-            <tr><td class="fn">Inbuilt CUR Analysis</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
-            <tr><td class="fn">Multi-Cloud</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cp">~</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td></tr>
-            <tr><td class="fn">K8s Cost Allocation</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td></tr>
-            <tr><td class="fn">AI Recommendations</td><td class="ck">&#10004; ZopAI</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td></tr>
-            <tr><td class="fn">Auto Right-Sizing</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td></tr>
-            <tr><td class="fn">Team Budgets</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td></tr>
-            <tr><td class="fn">Bulk Actions</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
-            <tr><td class="fn">IDP (ZopDay)</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
-            <tr><td class="fn">Spot Automation</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
-            <tr><td class="fn">Unit Economics</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td></tr>
-            <tr><td class="fn">Observability</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td></tr>
-            <tr><td class="fn">RBAC & Governance</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td></tr>
+            <tr style="background:rgba(108,92,231,.05)"><td class="fn" colspan="15" style="color:var(--accent2);font-weight:700;font-size:11px;letter-spacing:1px">SCHEDULING & AUTOMATION</td></tr>
+            <tr><td class="fn">One-Click ON/OFF</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Group Env Toggles</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Auto Grouping</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td></tr>
+            <tr><td class="fn">Dependency-Aware Scheduling</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td></tr>
+            <tr><td class="fn">Proactive Waste Prevention</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">One-Click Rec Execution</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td></tr>
+            <tr style="background:rgba(108,92,231,.05)"><td class="fn" colspan="15" style="color:var(--accent2);font-weight:700;font-size:11px;letter-spacing:1px">COST INTELLIGENCE & ANALYTICS</td></tr>
+            <tr><td class="fn">Showback</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td></tr>
+            <tr><td class="fn">ChargeBack</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Anomaly Detection</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Budget Prediction</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Inbuilt CUR Analysis</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cp">~</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Unit Economics</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Virtual Tagging</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td></tr>
+            <tr style="background:rgba(108,92,231,.05)"><td class="fn" colspan="15" style="color:var(--accent2);font-weight:700;font-size:11px;letter-spacing:1px">OPTIMIZATION & RIGHT-SIZING</td></tr>
+            <tr><td class="fn">RI/SP Recommendations</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Auto Right-Sizing</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cp">~</td><td class="cp">~</td><td class="cp">~</td><td class="ck">&#10004;</td></tr>
+            <tr><td class="fn">K8s Cost Allocation</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td></tr>
+            <tr><td class="fn">Spot Automation</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Idle Resource Detection</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cp">~</td><td class="cp">~</td><td class="cp">~</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td></tr>
+            <tr style="background:rgba(108,92,231,.05)"><td class="fn" colspan="15" style="color:var(--accent2);font-weight:700;font-size:11px;letter-spacing:1px">PLATFORM & GOVERNANCE</td></tr>
+            <tr><td class="fn">Event Readiness</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Multi-Cloud</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cp">~</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td></tr>
+            <tr><td class="fn">AI Recommendations</td><td class="ck">&#10004; ZopAI</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td></tr>
+            <tr><td class="fn">RBAC & Governance</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td></tr>
+            <tr><td class="fn">Team Budgets</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Auto-Tagging</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cp">~</td><td class="cp">~</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">ERP / Finance Integration</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">IDP (ZopDay)</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
+            <tr><td class="fn">Bulk Actions</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td></tr>
+            <tr><td class="fn">Observability</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="ck">&#10004;</td></tr>
+            <tr><td class="fn">5-Minute Setup</td><td class="ck">&#10004;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td><td class="cp">~</td><td class="cx">&#10008;</td><td class="cx">&#10008;</td></tr>
         </tbody></table>
     </div>
 </div>
 
 <div class="tc" id="tab-advantages">
-    <div class="stitle"><span>&#x1F4AA;</span> Where ZopNight Wins</div>
+    <div class="stitle"><span>&#x1F4AA;</span> Where ZopNight Wins <span class="sub">&mdash; Validated across 9 competitive research documents</span></div>
     <div class="agrid">
-        <div class="acard"><h4>One-Click ON/OFF</h4><p>No competitor offers true one-click scheduling to power down entire non-prod environments.</p></div>
-        <div class="acard"><h4>Group-Level Toggles</h4><p>Toggle entire environment groups (dev, staging, QA) with a single action. Unique to ZopNight.</p></div>
-        <div class="acard"><h4>Auto Grouping</h4><p>Automatically groups cloud resources by environment, team, and project. No manual tagging needed. No competitor has this.</p></div>
-        <div class="acard"><h4>Showback & ChargeBack</h4><p>Full cost visibility with showback reporting and chargeback allocation across teams and business units. Matches enterprise-grade tools like CloudHealth and Cloudability.</p></div>
-        <div class="acard"><h4>Anomaly Detection</h4><p>AI-powered anomaly detection flags unusual cost spikes in real-time. Competes with CloudZero, Datadog, and Anodot on cost anomalies.</p></div>
-        <div class="acard"><h4>Budget Prediction</h4><p>Predictive budget forecasting powered by AI. Forecast cloud spend before it happens. Most competitors lack proactive budget prediction.</p></div>
-        <div class="acard"><h4>RI/SP Recommendations</h4><p>Commitment-based discount recommendations for Reserved Instances and Savings Plans. Helps teams maximize RI/SP coverage. Competes with CloudZero, Cast AI, nOps, Spot.io.</p></div>
-        <div class="acard"><h4>Event Readiness</h4><p>Event prediction and readiness planning. Prepare cloud infrastructure ahead of traffic events (sales, launches, peaks). No competitor offers this.</p></div>
-        <div class="acard"><h4>One-Click Rec Execution</h4><p>Execute AI recommendations with a single click. No manual config changes needed. Cast AI and Densify have partial automation, but none match ZopNight's one-click simplicity.</p></div>
-        <div class="acard"><h4>Inbuilt CUR Analysis</h4><p>Built-in AWS Cost and Usage Report (CUR) analysis tool. No need for external BI tools or custom queries. Competitors like CloudZero and nOps offer partial CUR support, but ZopNight has it natively integrated.</p></div>
-        <div class="acard"><h4>ZopDay + ZopNight</h4><p>No competitor combines an IDP with FinOps. Single vendor for velocity and efficiency.</p></div>
-        <div class="acard"><h4>ZopAI Recommendations</h4><p>AI insights tailored to usage patterns across all three clouds.</p></div>
-        <div class="acard"><h4>Safe Bulk Actions</h4><p>Bulk resource operations with built-in safety checks and RBAC guardrails.</p></div>
-        <div class="acard"><h4>60% Non-Prod Savings</h4><p>Automating idle resource shutdown delivers immediate savings.</p></div>
+        <div class="acard"><h4>Prevention vs Detection (Unique)</h4><p>All 8 competitors analyzed only <b>detect</b> anomalies after they occur. ZopNight <b>prevents</b> waste proactively through automated scheduling. "We'll stop you from wasting money" vs their "We'll tell you when you're wasting money."</p></div>
+        <div class="acard"><h4>One-Click ON/OFF + Group Toggles</h4><p>No competitor offers true one-click scheduling to power down entire non-prod environments. Toggle dev, staging, QA groups with a single action. ParkMyCloud has basic scheduling but lacks group-level control.</p></div>
+        <div class="acard"><h4>Dependency-Aware Scheduling</h4><p>ZopNight shuts down stacks in the right order (app before DB, workers after services). Only Turbonomic has dependency mapping, but for optimization — not scheduled hibernation.</p></div>
+        <div class="acard"><h4>Auto-Tagging + Policy Enforcement</h4><p>ZopNight auto-tags resources with team, env, cost-centre, no-stop. Turbonomic consumes tags but can't create them. Research shows tagging is #1 importance factor (94/100) across all buyer personas.</p></div>
+        <div class="acard"><h4>5-Minute Setup (vs Days/Weeks)</h4><p>ZopNight: OAuth in 5 minutes. Turbonomic: days-to-weeks with professional services ($40K+/yr). Flexera: 40-60 hours per cloud provider. CloudHealth: complex enterprise deployment.</p></div>
+        <div class="acard"><h4>Showback & ChargeBack</h4><p>Matches enterprise tools like CloudHealth (5/5 stars) and Cloudability (5/5 stars) in cost attribution. Supports tag-based allocation, shared cost distribution, and team-level views.</p></div>
+        <div class="acard"><h4>Anomaly Detection (Hourly)</h4><p>Hourly granularity detection like CloudZero. AWS/Azure native tools only detect daily. ZopNight can detect anomalies that would be hidden in daily aggregates.</p></div>
+        <div class="acard"><h4>Budget Prediction + Forecasting</h4><p>Predictive budget forecasting. Per-team/per-app forecasts with "what-if" scenarios. Finout and CloudZero have similar but ZopNight integrates it with scheduling actions.</p></div>
+        <div class="acard"><h4>RI/SP Recommendations</h4><p>Commitment-based discount recommendations. nOps and Cloudability offer commitment-aware rightsizing. ZopNight recommends without invalidating existing commitments.</p></div>
+        <div class="acard"><h4>Event Readiness (Only ZopNight)</h4><p>Event prediction and infrastructure readiness planning. No competitor in any analyzed document offers this. Prepare ahead of traffic events, sales, launches, and peaks.</p></div>
+        <div class="acard"><h4>One-Click Rec Execution</h4><p>Execute AI recommendations instantly. Cast AI auto-remediates K8s only. Harness has AutoStopping. ZopNight is the only tool offering one-click execution across all resource types.</p></div>
+        <div class="acard"><h4>Non-Prod Waste: 60% Savings</h4><p>Research confirms non-production waste is an underserved market. All competitors focus on production optimization. ZopNight targets the specific gap of idle dev/staging/QA environments.</p></div>
+        <div class="acard"><h4>ZopDay + ZopNight (Only ZopDev)</h4><p>No competitor combines an IDP with FinOps. Feature gap analysis confirms: "Automated non-prod scheduling (ZopNight) + IDP (ZopDay) = combined platform play that NO competitor offers."</p></div>
+        <div class="acard"><h4>Workload DNA Architecture</h4><p>ZopNight's canonical normalization, 168-bit Rhythm Bitmap, and Welford's Algorithm for metric compression are architecturally ahead of all competitors' rightsizing approaches.</p></div>
+        <div class="acard"><h4>Inbuilt CUR Analysis</h4><p>Native AWS CUR analysis without external BI tools. CloudHealth and Cloudability need CUR ingestion pipelines. ZopNight has it integrated for immediate insights.</p></div>
+        <div class="acard"><h4>Simple Pricing Model</h4><p>$6/resource/month. Flexera charges $0.28 per $1 saved + complex tiering ($50K-$150K contracts). Turbonomic starts at $40K/yr. ZopNight: transparent, predictable, no hidden fees.</p></div>
     </div>
 </div>
 
 <div class="tc" id="tab-gaps">
-    <div class="stitle"><span>&#x26A0;&#xFE0F;</span> Where Competitors Still Challenge ZopNight</div>
+    <div class="stitle"><span>&#x26A0;&#xFE0F;</span> Where Competitors Still Challenge ZopNight <span class="sub">&mdash; From feature gap analysis & competitive research</span></div>
     <div class="agrid">
-        <div class="gcard"><h4>K8s Cost Allocation</h4><p>Kubecost and Cast AI offer deeper container-level cost allocation at namespace and pod level. ZopNight has basic K8s support.</p></div>
-        <div class="gcard"><h4>Spot Automation</h4><p>Spot.io, Cast AI, nOps provide fully automated spot instance management and failover. ZopNight does not yet automate spot.</p></div>
-        <div class="gcard"><h4>Unit Economics</h4><p>CloudZero and Datadog map cloud costs to business metrics (cost-per-customer, cost-per-feature). ZopNight focuses on infrastructure-level cost.</p></div>
-        <div class="gcard"><h4>Container Right-Sizing</h4><p>Cast AI, Densify, ScaleOps provide automated container right-sizing with ML. ZopNight offers recommendations but not auto-execution for containers.</p></div>
-        <div class="gcard"><h4>Auto RI/SP Purchasing</h4><p>ZopNight now recommends RI/SP, but nOps and Spot.io auto-purchase commitments. ZopNight recommends only; no auto-buy yet.</p></div>
-        <div class="gcard"><h4>Full Observability Stack</h4><p>Datadog combines APM, infrastructure monitoring, and cost in one platform. ZopNight is FinOps-focused, not a full observability suite.</p></div>
+        <div class="gcard"><h4>K8s Container Right-Sizing (HIGH)</h4><p>ScaleOps auto-rightsizes pods with 80% savings. Cast AI does in-place resizing with bin-packing. Kubecost tracks idle cost per pod. ZopNight manages K8s clusters but doesn't auto-rightsize containers yet. <b>Biggest competitive risk per gap analysis.</b></p></div>
+        <div class="gcard"><h4>Spot Instance Automation (HIGH)</h4><p>Spot.io Elastigroup predicts interruptions with ML. CloudPilot AI predicts 45min ahead. ScaleOps does intelligent spot shifting. ZopNight has NO spot instance management. Flexera acquired Spot portfolio for $100M.</p></div>
+        <div class="gcard"><h4>Unit Economics (HIGH)</h4><p>CloudZero shows cost-per-customer, per-feature, per-API call — their core differentiator. Finout has Unit Economics widget (cost-per-ride, per-policy). ZopNight has no unit economics capability. Major FinOps gap.</p></div>
+        <div class="gcard"><h4>Virtual Tagging (HIGH)</h4><p>Finout creates custom tags instantly without modifying cloud resources. Allocates costs even for untagged resources. Holori offers virtual tagging for cost harmonization. ZopNight has auto-tagging but no virtual tagging.</p></div>
+        <div class="gcard"><h4>Custom Dashboards (HIGH)</h4><p>Finout has fully customizable MegaBill dashboards. CloudZero has 13-month analytics with custom builder. ZopNight has a fixed dashboard — no self-service customization yet.</p></div>
+        <div class="gcard"><h4>Auto RI/SP Purchasing</h4><p>Spot.io Eco auto-purchases and manages RI/SP across 60+ services. nOps auto-buys commitments. ZopNight recommends only — no automated purchasing yet.</p></div>
+        <div class="gcard"><h4>ERP / Finance Integration</h4><p>Cloudability has native SAP, Oracle, Workday ERP integration. Flexera has the strongest finance integration. ZopNight has CSV export only — no ERP connectors. Gap for enterprise adoption.</p></div>
+        <div class="gcard"><h4>Full Observability Stack</h4><p>Datadog combines APM + infrastructure monitoring + cost in one platform. Turbonomic offers full-stack APM with SLA tracking. ZopNight is FinOps-focused, not a full observability suite.</p></div>
+        <div class="gcard"><h4>Engineering Workflow (Jira/ServiceNow)</h4><p>Cloudability opens Jira tickets, waits for approval, verifies savings. Harness integrates with CI/CD pipelines. ZopNight lacks bi-directional ticketing and Terraform PR generation.</p></div>
+        <div class="gcard"><h4>SaaS Cost Management</h4><p>Finout integrates Datadog, Snowflake, Databricks, MongoDB costs into MegaBill. Holori adding Snowflake/OpenAI/Anthropic tracking. ZopNight focuses only on cloud infra costs.</p></div>
+    </div>
+</div>
+
+<div class="tc" id="tab-research">
+    <div class="stitle"><span>&#x1F4D1;</span> Research Insights <span class="sub">&mdash; Key findings from 9 competitive analysis documents</span></div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(480px,1fr));gap:18px;margin-bottom:28px">
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px">
+            <h4 style="color:var(--accent2);font-size:14px;margin-bottom:12px">Showback & Chargeback Landscape (8 Vendors)</h4>
+            <table style="width:100%;font-size:11px;border-collapse:collapse">
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt3)">Vendor</td><td style="padding:6px;color:var(--txt3)">Rating</td><td style="padding:6px;color:var(--txt3)">Unique Edge</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">CloudHealth</td><td style="padding:6px;color:var(--green)">5/5</td><td style="padding:6px;color:var(--txt2)">What-if testing, amortized RI</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">Cloudability</td><td style="padding:6px;color:var(--green)">5/5</td><td style="padding:6px;color:var(--txt2)">True Cost, multi-currency, ERP</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">Kubecost</td><td style="padding:6px;color:var(--orange)">4/5</td><td style="padding:6px;color:var(--txt2)">Idle cost tracking, GPU allocation</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">Harness</td><td style="padding:6px;color:var(--orange)">4/5</td><td style="padding:6px;color:var(--txt2)">Cost per deployment (CI/CD link)</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">CloudZero</td><td style="padding:6px;color:var(--orange)">4/5</td><td style="padding:6px;color:var(--txt2)">Cost per customer, telemetry</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">Flexera</td><td style="padding:6px;color:var(--orange)">3/5</td><td style="padding:6px;color:var(--txt2)">On-prem + cloud unified</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">Turbonomic</td><td style="padding:6px;color:var(--red)">2/5</td><td style="padding:6px;color:var(--txt2)">Focus is optimization, not showback</td></tr>
+                <tr><td style="padding:6px;color:var(--txt)">Spot.io</td><td style="padding:6px;color:var(--red)">2/5</td><td style="padding:6px;color:var(--txt2)">K8s optimization focus</td></tr>
+            </table>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px">
+            <h4 style="color:var(--accent2);font-size:14px;margin-bottom:12px">Anomaly Detection: Prevention vs Detection</h4>
+            <table style="width:100%;font-size:11px;border-collapse:collapse">
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt3)">Vendor</td><td style="padding:6px;color:var(--txt3)">Approach</td><td style="padding:6px;color:var(--txt3)">Granularity</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">AWS Native</td><td style="padding:6px;color:var(--red)">Detection</td><td style="padding:6px;color:var(--txt2)">Daily, 24hr lag</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">Azure Native</td><td style="padding:6px;color:var(--red)">Detection</td><td style="padding:6px;color:var(--txt2)">Daily, limited scope</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">CloudZero</td><td style="padding:6px;color:var(--orange)">Detection</td><td style="padding:6px;color:var(--txt2)">Hourly, 36hr vs 12mo</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">Finout</td><td style="padding:6px;color:var(--orange)">Detection</td><td style="padding:6px;color:var(--txt2)">Daily, 150 alerts/day cap</td></tr>
+                <tr style="border-bottom:1px solid var(--bdr)"><td style="padding:6px;color:var(--txt)">Datadog</td><td style="padding:6px;color:var(--orange)">Detection</td><td style="padding:6px;color:var(--txt2)">3 ML algorithms</td></tr>
+                <tr><td style="padding:6px;color:var(--green);font-weight:700">ZopNight</td><td style="padding:6px;color:var(--green);font-weight:700">Prevention</td><td style="padding:6px;color:var(--green)">Real-time idle detection</td></tr>
+            </table>
+            <p style="margin-top:10px;font-size:11px;color:var(--txt3);padding:8px;background:rgba(0,206,201,.08);border-radius:6px">No competitor prevents waste proactively. All detect after costs are incurred. ZopNight's automated scheduling is the only prevention approach in the market.</p>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px">
+            <h4 style="color:var(--accent2);font-size:14px;margin-bottom:12px">IBM Turbonomic vs ZopNight</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11px">
+                <div style="padding:10px;background:rgba(74,105,189,.1);border-radius:8px;border:1px solid rgba(74,105,189,.2)">
+                    <b style="color:var(--txt)">Turbonomic</b>
+                    <ul style="margin:6px 0 0 14px;color:var(--txt2);line-height:1.6">
+                        <li>$40K+/year enterprise</li>
+                        <li>Days-to-weeks setup</li>
+                        <li>Performance optimizer</li>
+                        <li>45K+ auto actions/month</li>
+                        <li>Production-focused</li>
+                        <li>247% ROI (3yr claimed)</li>
+                    </ul>
+                </div>
+                <div style="padding:10px;background:rgba(0,206,201,.1);border-radius:8px;border:1px solid rgba(0,206,201,.2)">
+                    <b style="color:var(--green)">ZopNight</b>
+                    <ul style="margin:6px 0 0 14px;color:var(--txt2);line-height:1.6">
+                        <li>$6/resource/month</li>
+                        <li>5-minute setup</li>
+                        <li>Waste eliminator</li>
+                        <li>Smart hibernation</li>
+                        <li>Non-prod focused</li>
+                        <li>Up to 60% savings</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="margin-top:10px;font-size:11px;color:var(--txt3);padding:8px;background:rgba(108,92,231,.08);border-radius:6px">Complementary, not competitive. Turbonomic optimizes running apps; ZopNight stops idle ones. Of 6 ZopNight features, Turbonomic has 4 but lacks Auto-Tagging and Schedule Overrides.</p>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px">
+            <h4 style="color:var(--accent2);font-size:14px;margin-bottom:12px">Flexera vs ZopNight</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11px">
+                <div style="padding:10px;background:rgba(214,48,49,.1);border-radius:8px;border:1px solid rgba(214,48,49,.2)">
+                    <b style="color:var(--txt)">Flexera (+ Spot)</b>
+                    <ul style="margin:6px 0 0 14px;color:var(--txt2);line-height:1.6">
+                        <li>$50K-$150K contracts</li>
+                        <li>40-60hr setup/provider</li>
+                        <li>IT Asset + Cloud + SaaS</li>
+                        <li>Acquired Spot ($100M)</li>
+                        <li>Enterprise-grade</li>
+                        <li>MSP ecosystem</li>
+                    </ul>
+                </div>
+                <div style="padding:10px;background:rgba(0,206,201,.1);border-radius:8px;border:1px solid rgba(0,206,201,.2)">
+                    <b style="color:var(--green)">ZopNight</b>
+                    <ul style="margin:6px 0 0 14px;color:var(--txt2);line-height:1.6">
+                        <li>$6/resource (transparent)</li>
+                        <li>5-min OAuth setup</li>
+                        <li>Focused scheduling</li>
+                        <li>6.1x-23.7x ROI</li>
+                        <li>SMB to enterprise</li>
+                        <li>Zero maintenance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px">
+            <h4 style="color:var(--accent2);font-size:14px;margin-bottom:12px">RightSizing: ZopNight vs Market</h4>
+            <div style="font-size:11px;color:var(--txt2);line-height:1.6">
+                <div style="padding:8px;background:rgba(0,206,201,.08);border-radius:6px;margin-bottom:8px"><b style="color:var(--green)">ZopNight Ahead:</b> Workload DNA (canonical normalization), 168-bit Rhythm Bitmap, metric compression, drift detection, workload classification, unified pipeline</div>
+                <div style="padding:8px;background:rgba(108,92,231,.08);border-radius:6px;margin-bottom:8px"><b style="color:var(--accent2)">At Parity:</b> Cloud coverage (AWS/Azure), data collection (CPU/Memory/Network/Disk), recommendation engine, financial/cloud context</div>
+                <div style="padding:8px;background:rgba(255,107,107,.08);border-radius:6px"><b style="color:var(--red)">Behind:</b> Auto-remediation (Cast AI does in-place), ticketing (Cloudability Jira), Terraform PR generation, realized savings tracking (Cloudability unique), K8s-native optimization (Cast AI bin-packing)</div>
+            </div>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px">
+            <h4 style="color:var(--accent2);font-size:14px;margin-bottom:12px">Feature Gap Priority (From Excel Analysis)</h4>
+            <div style="font-size:11px;color:var(--txt2);line-height:1.8">
+                <div style="margin-bottom:8px"><span style="background:rgba(255,107,107,.15);color:var(--red);padding:2px 8px;border-radius:4px;font-weight:700;font-size:10px">HIGH</span> Anomaly Detection, Unit Economics, Custom Dashboards, Forecasting, Rightsizing, K8s Container Optimization, Spot Instance Mgmt, Virtual Tagging</div>
+                <div style="margin-bottom:8px"><span style="background:rgba(253,203,110,.15);color:var(--orange);padding:2px 8px;border-radius:4px;font-weight:700;font-size:10px">MEDIUM</span> SaaS Cost Unification, Showback/Chargeback, RI/SP Optimization, Idle Resource Detection, Slack Bot, Terraform Integration</div>
+                <div><span style="background:rgba(0,206,201,.15);color:var(--green);padding:2px 8px;border-radius:4px;font-weight:700;font-size:10px">LOW</span> GPU Optimization, Infrastructure Diagrams, BI Tool Export</div>
+            </div>
+            <p style="margin-top:12px;font-size:11px;color:var(--orange);padding:8px;background:rgba(253,203,110,.08);border-radius:6px"><b>Biggest Risk:</b> ScaleOps (K8s rightsizing) + Finout (full FinOps visibility) together cover almost everything ZopDev doesn't have.</p>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px">
+            <h4 style="color:var(--accent2);font-size:14px;margin-bottom:12px">Market-Wide Gaps (No One Solves)</h4>
+            <div style="font-size:11px;color:var(--txt2);line-height:1.8">
+                <div style="padding:8px;background:rgba(108,92,231,.08);border-radius:6px;margin-bottom:6px"><b style="color:var(--accent2)">1. Intent Awareness</b> — No tool understands DR vs prod, cold standby vs broken, compliance-mandated overprovisioning</div>
+                <div style="padding:8px;background:rgba(108,92,231,.08);border-radius:6px;margin-bottom:6px"><b style="color:var(--accent2)">2. Lifecycle-Aware Recs</b> — No tool reasons across create-peak-decay-decommission lifecycle</div>
+                <div style="padding:8px;background:rgba(108,92,231,.08);border-radius:6px;margin-bottom:6px"><b style="color:var(--accent2)">3. Dependency-Aware Optimization</b> — "If I downsize DB, what breaks upstream?" Only Cast AI (K8s only)</div>
+                <div style="padding:8px;background:rgba(108,92,231,.08);border-radius:6px"><b style="color:var(--accent2)">4. Forecast-First Optimization</b> — Most tools are rear-view mirror driven. Very few model future demand.</div>
+            </div>
+        </div>
+
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px">
+            <h4 style="color:var(--accent2);font-size:14px;margin-bottom:12px">Conjoint Analysis: What Buyers Value Most</h4>
+            <div style="font-size:11px;color:var(--txt2)">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><div style="width:100%;max-width:200px;height:16px;background:var(--bg);border-radius:8px;overflow:hidden"><div style="width:94%;height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:8px"></div></div><span>Tagging & Ownership — 94/100</span></div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><div style="width:100%;max-width:200px;height:16px;background:var(--bg);border-radius:8px;overflow:hidden"><div style="width:89%;height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:8px"></div></div><span>Automation Power — 89/100</span></div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><div style="width:100%;max-width:200px;height:16px;background:var(--bg);border-radius:8px;overflow:hidden"><div style="width:82%;height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:8px"></div></div><span>Governance & Guardrails — 82/100</span></div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><div style="width:100%;max-width:200px;height:16px;background:var(--bg);border-radius:8px;overflow:hidden"><div style="width:79%;height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:8px"></div></div><span>Waste Control — 79/100</span></div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><div style="width:100%;max-width:200px;height:16px;background:var(--bg);border-radius:8px;overflow:hidden"><div style="width:73%;height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:8px"></div></div><span>Forecasting & Planning — 73/100</span></div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><div style="width:100%;max-width:200px;height:16px;background:var(--bg);border-radius:8px;overflow:hidden"><div style="width:65%;height:100%;background:var(--accent);border-radius:8px"></div></div><span>Visibility — 65/100</span></div>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><div style="width:100%;max-width:200px;height:16px;background:var(--bg);border-radius:8px;overflow:hidden"><div style="width:59%;height:100%;background:var(--accent);border-radius:8px"></div></div><span>Actionability — 59/100</span></div>
+                <div style="display:flex;align-items:center;gap:8px"><div style="width:100%;max-width:200px;height:16px;background:var(--bg);border-radius:8px;overflow:hidden"><div style="width:43%;height:100%;background:var(--txt3);border-radius:8px"></div></div><span>Price — 43/100</span></div>
+            </div>
+            <p style="margin-top:12px;font-size:11px;color:var(--green);padding:8px;background:rgba(0,206,201,.08);border-radius:6px"><b>Key insight:</b> ZopNight is NOT a budget-driven tool. Users will pay $249-$299/account/month if it fixes cloud chaos, tagging, automation safety, and waste control. 64% predicted adoption at optimal config.</p>
+        </div>
     </div>
 </div>
 
