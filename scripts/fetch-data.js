@@ -42,6 +42,7 @@ const COMPETITORS = [
   { id:'prosperops', name:'ProsperOps', threat:'low', blog_feed:'https://www.prosperops.com/blog/feed/', x:'ProsperOps', li_slug:'prosperops' },
   { id:'doit', name:'DoiT International', threat:'low', blog_feed:'https://www.doit.com/blog/feed/', x:'doitintl', li_slug:'doitintl' },
   { id:'infracost', name:'Infracost', threat:'low', blog_feed:'https://www.infracost.io/blog/feed/', x:'infracost', li_slug:'infracost' },
+  { id:'magicorange', name:'MagicOrange', threat:'medium', blog_feed:null, x:'', li_slug:'magicorange-software' },
 ];
 
 // ── Helpers ──
@@ -183,7 +184,7 @@ async function fetchReddit() {
     const compSearches = [
       'CloudZero OR Kubecost OR "Cast AI" OR nOps OR "Spot.io"',
       'Densify OR Flexera OR Harness OR Turbonomic OR ScaleOps OR Finout',
-      'Datadog OR CloudHealth OR Cloudability OR DuploCloud',
+      'Datadog OR CloudHealth OR Cloudability OR DuploCloud OR MagicOrange',
     ];
     for (const q of compSearches) {
       if (redditBlocked) break;
@@ -287,6 +288,7 @@ async function fetchNews() {
     { q: '"DuploCloud" OR "Astuto" OR "Neysa" cloud OR funding OR AI', label: 'DuploCloud/Astuto/Neysa' },
     { q: '"CloudPilot AI" OR "Ternary" OR "Anodot" OR "Holori" cloud cost OR funding', label: 'CloudPilot/Ternary/Others' },
     { q: '"GCP cost management" OR "Google Cloud cost" tools OR update OR feature', label: 'GCP Cost Mgmt' },
+    { q: '"MagicOrange" FinOps OR ITFM OR "cloud cost" OR reporting OR showback OR chargeback', label: 'MagicOrange' },
   ];
 
   for (const b of newsBatches) {
